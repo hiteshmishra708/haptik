@@ -1,0 +1,2 @@
+kSUCCESS = "success"
+kDATA = "data"
