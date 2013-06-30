@@ -5,6 +5,9 @@ import json
 from api.models.default import *
 from api.models.ejabber import Messages, Collections
 from api import const
+from django.views.decorators.csrf import csrf_exempt
+from api.lib.xmpp_lib import send_push_notification 
+from api.lib.chats import get_unique_chats
 
 def index(request):
     return HttpResponse("Hello, world. TESTTTTT.")
@@ -15,14 +18,38 @@ def get_businesses(request):
     serialize_data = serializers.serialize('json', rows)
     data = {const.kSUCCESS : True, const.kDATA : serialize_data}
     data = json.dumps(data)
-    return HttpResponse(data)
+    return HttpResponse(data, mimetype='application/json')
 
 def get_business_info(request, business_id):
     row = Business.objects.get(id = business_id)
     serialize_data = serializers.serialize('json', [row])
     data = {const.kSUCCESS : True, const.kDATA : serialize_data}
     data = json.dumps(data)
-    return HttpResponse(data)
+    return HttpResponse(data, mimetype='application/json')
+
+
+def chats(request, user_name):
+    user_name = '%s@zingcredits.com' % user_name
+    chats = Collections.objects.filter(us=user_name).order_by('-change_utc')
+    unique_chats = get_unique_chats(chats)
+    result_list = []
+    for item in unique_chats:
+        try:
+            business = Business.objects.get(xmpp_handle = ('%s@zingcredits.com' % item.with_user))
+        except Exception, e:
+            print 'SOME ERROR IN FETCHING BUSINESS: ' , e
+            continue
+        last_chat = Messages.objects.filter(coll_id=item.id).order_by('-utc')[0]
+        business = business.to_dict()
+        business['created_at'] = str(business['created_at'])
+        business['modified_at'] = str(business['modified_at'])
+        business['last_chat'] = last_chat.body
+        business['last_chat_time'] = str(item.change_utc)
+        del(business['_state'])
+        result_list.append(business)
+    print 'resulst : ', result_list
+    data =  json.dumps({'objects' : result_list, 'success' : True})
+    return HttpResponse(data, mimetype='application/json')
 
 
 def get_chat_history(request):
@@ -40,6 +67,21 @@ def get_chat_history(request):
     data = {const.kSUCCESS : True, const.kDATA : serialize_data}
     data = json.dumps(data)
     return HttpResponse(data)
+
+@csrf_exempt
+def post_message(request):
+    print 'just got posted'
+    to = request.POST.get('to')
+    print 'TO : ', to
+    body = request.POST.get('body')
+    print 'BODY : ', body
+    from_user = request.POST.get('from')
+    print 'from : ', from_user
+    to_user = User.objects.filter(number=to)[0]
+    print 'FULL USER : ', to_user
+    full_body = '%s : %s' % (from_user, body)
+    send_push_notification(to_user, full_body)
+    return HttpResponse('Done')
     
 
 

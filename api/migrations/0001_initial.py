@@ -23,10 +23,26 @@ class Migration(SchemaMigration):
         ))
         db.send_create_signal(u'api', ['Business'])
 
+        # Adding model 'User'
+        db.create_table(u'api_user', (
+            (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
+            ('number', self.gf('django.db.models.fields.CharField')(max_length=250)),
+            ('country_code', self.gf('django.db.models.fields.CharField')(max_length=250)),
+            ('first_name', self.gf('django.db.models.fields.CharField')(max_length=250, null=True)),
+            ('last_name', self.gf('django.db.models.fields.CharField')(max_length=250, null=True)),
+            ('active', self.gf('django.db.models.fields.BooleanField')(default=True)),
+            ('created_at', self.gf('django.db.models.fields.DateTimeField')(auto_now_add=True, blank=True)),
+            ('modified_at', self.gf('django.db.models.fields.DateTimeField')(auto_now=True, blank=True)),
+        ))
+        db.send_create_signal(u'api', ['User'])
+
 
     def backwards(self, orm):
         # Deleting model 'Business'
         db.delete_table(u'api_business')
+
+        # Deleting model 'User'
+        db.delete_table(u'api_user')
 
 
     models = {
@@ -42,6 +58,17 @@ class Migration(SchemaMigration):
             'modified_at': ('django.db.models.fields.DateTimeField', [], {'auto_now': 'True', 'blank': 'True'}),
             'name': ('django.db.models.fields.CharField', [], {'max_length': '250'}),
             'xmpp_handle': ('django.db.models.fields.CharField', [], {'max_length': '250'})
+        },
+        u'api.user': {
+            'Meta': {'object_name': 'User'},
+            'active': ('django.db.models.fields.BooleanField', [], {'default': 'True'}),
+            'country_code': ('django.db.models.fields.CharField', [], {'max_length': '250'}),
+            'created_at': ('django.db.models.fields.DateTimeField', [], {'auto_now_add': 'True', 'blank': 'True'}),
+            'first_name': ('django.db.models.fields.CharField', [], {'max_length': '250', 'null': 'True'}),
+            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
+            'last_name': ('django.db.models.fields.CharField', [], {'max_length': '250', 'null': 'True'}),
+            'modified_at': ('django.db.models.fields.DateTimeField', [], {'auto_now': 'True', 'blank': 'True'}),
+            'number': ('django.db.models.fields.CharField', [], {'max_length': '250'})
         }
     }
 

@@ -15,7 +15,6 @@ class DBRouter(object):
         return None
 
     def db_for_write(self, model, **hints):
-        print 'in write'
         m = model.__module__.split('.')
         try:
             d = m[-1]
@@ -27,8 +26,7 @@ class DBRouter(object):
 
     def allow_syncdb(self, db, model):
         "Make sure syncdb doesn't run on anything but default"
-        print 'in sync'
-        if model._meta.app_label == 'myapp':
+        if model._meta.app_label == 'api':
             return False
         elif db == 'default':
             return True
