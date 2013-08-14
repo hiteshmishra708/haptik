@@ -1,5 +1,5 @@
 from tastypie.resources import ModelResource,  ALL, ALL_WITH_RELATIONS
-from api.models.default import Business, User
+from api.models.default import Business, User, Favourite
 from api.models.ejabber import Messages, Collections
 from api.lib.xmpp_lib import register_user
 from tastypie import fields
@@ -10,6 +10,9 @@ class BusinessResource(ModelResource):
     class Meta:
         queryset = Business.objects.filter(active=1)
         resource_name = "business"
+        filtering = {
+            'modified_at' : ['gte' , 'lte'],
+        }
 
 class UserResource(ModelResource):
     class Meta:
@@ -17,6 +20,9 @@ class UserResource(ModelResource):
         authorization = Authorization()
         always_return_data = True
         resource_name = "user"
+        filtering = {
+            'id': ALL
+        }
 
     def obj_create(self, bundle, **kwargs):
         print 'in post'
@@ -41,13 +47,32 @@ class UserResource(ModelResource):
             print 'CODES DONT MATCH'
             raise 
         try:
+            print 'regsitering user :', user.number, ' activation code: ' , activate_code
             register_user('%s' % user.number, activate_code) 
+            user.verified = True
+            user.save()
             print 'registered user'
         except Exception, E:
             print 'could not register user', e
             raise
         bundle = super(UserResource, self).obj_update(bundle, request, **kwargs)
         return bundle
+
+
+class FavouriteResource(ModelResource):
+    user = fields.ForeignKey(UserResource, 'user')
+    business = fields.ForeignKey(BusinessResource, 'business', full=True)
+
+    class Meta:
+        queryset = Favourite.objects.filter(active=1)
+        authorization = Authorization()
+        resource_name = "favourite"
+        ordering = ["id"]
+        always_return_data = True
+        filtering = {
+            'user' : ALL_WITH_RELATIONS
+        }
+
 
 class CollectionResource(ModelResource):
     class Meta:

@@ -1,7 +1,0 @@
-[Thu Apr 11 02:55:10 2013] [error] [client 50.62.82.80] client sent HTTP/1.1 request without hostname (see RFC2616 section 14.23): /w00tw00t.at.ISC.SANS.Win32:)
-[Thu Apr 11 04:36:58 2013] [error] [client 114.112.91.99] File does not exist: /var/www/html
-[Sat Apr 13 05:12:23 2013] [error] [client 50.62.82.80] client sent HTTP/1.1 request without hostname (see RFC2616 section 14.23): /w00tw00t.at.ISC.SANS.Win32:)
-[Mon Apr 15 07:42:38 2013] [error] [client 50.62.82.80] client sent HTTP/1.1 request without hostname (see RFC2616 section 14.23): /w00tw00t.at.ISC.SANS.Win32:)
-[Wed Apr 17 09:52:32 2013] [error] [client 50.62.82.80] client sent HTTP/1.1 request without hostname (see RFC2616 section 14.23): /w00tw00t.at.ISC.SANS.Win32:)
-[Fri Apr 19 12:04:59 2013] [error] [client 50.62.82.80] client sent HTTP/1.1 request without hostname (see RFC2616 section 14.23): /w00tw00t.at.ISC.SANS.Win32:)
-[Sat Apr 20 17:07:38 2013] [error] [client 83.212.113.167] client sent HTTP/1.1 request without hostname (see RFC2616 section 14.23): /w00tw00t.at.ISC.SANS.DFind:)

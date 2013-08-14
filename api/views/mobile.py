@@ -70,6 +70,7 @@ def get_chat_history(request):
 
 @csrf_exempt
 def post_message(request):
+    print 'request : ' , request
     print 'just got posted'
     to = request.POST.get('to')
     print 'TO : ', to

@@ -168,3 +168,11 @@ LOGGING = {
         },
     }
 }
+
+PYAPNS_CONFIG = {
+    'HOST': 'http://localhost:7077/',
+    'TIMEOUT': 15,
+    'INITIAL': [
+        ('Haptik', '/home/ubuntu/apns-dev.pem', 'sandbox'),
+    ]
+}
