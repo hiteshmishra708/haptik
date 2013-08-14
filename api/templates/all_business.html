@@ -1,0 +1,30 @@
+
+{% extends "base.html" %}
+{% block content %}
+    <table class='span8 table table-bordered table-hover table-striped'>
+        <caption class="table-caption">All active businesses</caption>
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Name</th>
+                <th>Chat Handle</th>
+                <th>Email</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for row in businesses %}
+                <tr>
+                    <td> {{ row.id }} </td>
+                    <td> {{ row.name }}</td>
+                    <td> {{ row.xmpp_handle }} </td>
+                    <td> {{ row.email }} </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <div class="clearfix"></div>
+    <p class="btn-padding">
+        <button class="btn btn-primary" type="button">Add new business</button>
+    </p>
+
+{% endblock %}

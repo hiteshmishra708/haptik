@@ -1,4 +1,7 @@
 # Django settings for haptik_api project.
+import os
+
+SITE_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
@@ -72,7 +75,7 @@ MEDIA_URL = ''
 # Don't put anything in this directory yourself; store your static files
 # in apps' "static/" subdirectories and in STATICFILES_DIRS.
 # Example: "/var/www/example.com/static/"
-STATIC_ROOT = ''
+STATIC_ROOT = os.path.join(SITE_ROOT, 'api', 'static')
 
 # URL prefix for static files.
 # Example: "http://example.com/static/", "http://static.example.com/"
@@ -109,6 +112,7 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
+    'pipeline.middleware.MinifyHTMLMiddleware',
     # Uncomment the next line for simple clickjacking protection:
     # 'django.middleware.clickjacking.XFrameOptionsMiddleware',
 )
@@ -119,6 +123,7 @@ ROOT_URLCONF = 'haptik_api.urls'
 WSGI_APPLICATION = 'haptik_api.wsgi.application'
 
 TEMPLATE_DIRS = (
+    '~/haptik_api/api/templates',
     # Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".
     # Always use forward slashes, even on Windows.
     # Don't forget to use absolute paths, not relative paths.
@@ -134,6 +139,8 @@ INSTALLED_APPS = (
     'south',
     'api',
     'tastypie',
+    'pipeline',
+    'twitter_bootstrap',
     # Uncomment the next line to enable the admin:
     # 'django.contrib.admin',
     # Uncomment the next line to enable admin documentation:
@@ -176,3 +183,45 @@ PYAPNS_CONFIG = {
         ('Haptik', '/home/ubuntu/apns-dev.pem', 'sandbox'),
     ]
 }
+
+
+STATICFILES_STORAGE = 'pipeline.storage.PipelineStorage'
+
+PIPELINE_COMPILERS = (
+    'pipeline.compilers.less.LessCompiler',
+    )
+
+PIPELINE_CSS = {
+    'bootstrap': {
+        'source_filenames': (
+            'less/bootstrap.less',
+            'less/responsive.less'
+        ),
+        'output_filename': 'css/b.css',
+        'extra_context': {
+            'media': 'screen,projection',
+        },
+    },
+}
+
+PIPELINE_JS = {
+    'bootstrap': {
+        'source_filenames': (
+            'js/bootstrap-transition.js',
+            'js/bootstrap-alert.js',
+            'js/bootstrap-modal.js',
+            'js/bootstrap-dropdown.js',
+            'js/bootstrap-scrollspy.js',
+            'js/bootstrap-tab.js',
+            'js/bootstrap-tooltip.js',
+            'js/bootstrap-popover.js',
+            'js/bootstrap-button.js',
+            'js/bootstrap-collapse.js',
+            'js/bootstrap-carousel.js',
+            'js/bootstrap-typeahead.js',
+            'js/bootstrap-affix.js',
+        ),
+        'output_filename': 'js/b.js',
+    },
+}
+

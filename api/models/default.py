@@ -8,9 +8,9 @@ class Business(models.Model):
     email = models.CharField(max_length=250, null=True)
     location = models.CharField(max_length=250, null=True)
     category = models.CharField(max_length=250, null=True)
-    website = models.CharField(max_length=250)
-    facebook = models.CharField(max_length=250)
-    twitter = models.CharField(max_length=250)
+    website = models.CharField(max_length=250, null=True)
+    facebook = models.CharField(max_length=250, null=True)
+    twitter = models.CharField(max_length=250, null=True)
     active = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True)
     modified_at = models.DateTimeField(auto_now=True)
@@ -65,6 +65,25 @@ class Favourite(models.Model):
 
     class Meta:
         db_table = 'api_favourite'
+        app_label= 'api'
+
+
+class Faqs(models.Model):
+    business = models.ForeignKey(Business)
+    question = models.TextField()
+    answer = models.TextField()
+    active = models.BooleanField(default=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    modified_at = models.DateTimeField(auto_now=True)
+
+    def __unicode__(self):
+        return unicode_class(self)
+
+    def to_dict(self):
+        return convert_to_dict(self)
+
+    class Meta:
+        db_table = 'api_faqs'
         app_label= 'api'
 
 

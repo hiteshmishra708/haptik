@@ -21,6 +21,7 @@ urlpatterns = patterns('',
     url(r'^post_message/', 'api.views.mobile.post_message'),
     url(r'^get_businesses/', 'api.views.mobile.get_businesses'),
     url(r'^chats/(?P<user_name>\w+)/$', 'api.views.mobile.chats'),
+    url(r'^business_admin/', 'api.views.web.business_admin'),
     # url(r'^haptik_api/', include('haptik_api.foo.urls')),
 
     # Uncomment the admin/doc line below to enable admin documentation:
