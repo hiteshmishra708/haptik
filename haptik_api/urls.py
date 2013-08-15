@@ -22,7 +22,10 @@ urlpatterns = patterns('',
     url(r'^get_businesses/', 'api.views.mobile.get_businesses'),
     url(r'^chats/(?P<user_name>\w+)/$', 'api.views.mobile.chats'),
     url(r'^business_admin/', 'api.views.web.business_admin'),
+    url(r'^add_business/(?P<business_id>\d+)/$', 'api.views.web.add_business'),
     url(r'^add_business/', 'api.views.web.add_business'),
+    url(r'^business_faqs/(?P<business_id>\d+)/$', 'api.views.web.business_faqs'),
+    url(r'^add_faqs/(?P<business_id>\d+)/$', 'api.views.web.add_faqs'),
     # url(r'^haptik_api/', include('haptik_api.foo.urls')),
 
     # Uncomment the admin/doc line below to enable admin documentation:

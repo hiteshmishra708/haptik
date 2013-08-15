@@ -1,7 +1,7 @@
 
 {% extends "base.html" %}
 {% block content %}
-    <table class='span8 table table-bordered table-hover table-striped'>
+    <table class='span8 table table-bordered table-hover '>
         <caption class="table-caption">All active businesses</caption>
         <thead>
             <tr>
@@ -9,22 +9,24 @@
                 <th>Name</th>
                 <th>Chat Handle</th>
                 <th>Email</th>
+                <th>FAQS</th>
             </tr>
         </thead>
         <tbody>
             {% for row in businesses %}
-                <tr>
+                <tr id="business_row" value={{row.id}}>
                     <td> {{ row.id }} </td>
                     <td> {{ row.name }}</td>
                     <td> {{ row.xmpp_handle }} </td>
                     <td> {{ row.email }} </td>
+                    <td> <a href="/business_faqs/{{ row.id}}/">FAQs</a></td>
                 </tr>
             {% endfor %}
         </tbody>
     </table>
     <div class="clearfix"></div>
     <p class="btn-padding">
-        <button class="btn btn-primary" type="button">Add new business</button>
+        <button class="btn btn-primary" type="button" id="add_business">Add new business</button>
     </p>
 
 {% endblock %}

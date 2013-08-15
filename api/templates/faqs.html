@@ -1,0 +1,27 @@
+
+{% extends "base.html" %}
+{% block content %}
+    <table class='span8 table table-bordered table-hover table-striped'>
+        <caption class="table-caption">Faqs for {{ business.name }}</caption>
+        <thead>
+            <tr>
+                <th>Quesion</th>
+                <th>Answer</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for row in all_faqs %}
+                <tr>
+                    <td> {{ row.question}}</td>
+                    <td> {{ row.answer}} </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <div class="clearfix"></div>
+    <p class="btn-padding">
+        <button class="btn btn-primary" type="button" id="add_faq" value="{{business.id}}" >Add new FAQ</button>
+        <button class="btn btn-inverse" type="button" id="back_to_business"  value="{{ business.id }}">{{ business.name}} profile</button>
+    </p>
+
+{% endblock %}

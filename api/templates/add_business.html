@@ -1,4 +1,17 @@
-<form action="/add_business/" method="post">{% csrf_token %}
-{{ form.as_p }}
-<input type="submit" value="Submit" />
-</form>
+
+{% extends "base.html" %}
+{% load bootstrap_toolkit %}
+{% block content %}
+    <form class="form-horizontal form-padding" action="/add_business/{{form.initial.id}}/" method="post">{% csrf_token %}
+        <legend>Add a business</legend>
+        {{ form|as_bootstrap }}
+        <div class="form-actions">
+            <button type="submit" class="btn btn-primary">Submit</button>
+            {% if form.initial.id %}
+                <button type=button class="btn btn-info" value={{form.initial.id}} id="show_faqs">FAQs</button>
+            {% endif %}
+            <button type=button class="btn btn-danger" id="back_to_admin">Cancel</button>
+        </div>
+    </form>
+{% endblock %}
+

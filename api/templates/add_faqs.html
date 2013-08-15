@@ -1,0 +1,14 @@
+
+{% extends "base.html" %}
+{% load bootstrap_toolkit %}
+{% block content %}
+    <form class="form-horizontal form-padding" action="/add_faqs/{{ form.initial.business.id }}/" method="post">{% csrf_token %}
+        <legend>Add a FAQ for {{ form.initial.business.name }}</legend>
+        {{ form|as_bootstrap }}
+        <div class="form-actions">
+            <button type="submit" class="btn btn-primary">Submit</button>
+            <button type=button class="btn btn-danger" id="back_to_faqs" value="{{ form.initial.business.id }}">Cancel</button>
+        </div>
+    </form>
+{% endblock %}
+
