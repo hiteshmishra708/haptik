@@ -10,8 +10,8 @@ v1_api.register(CollectionResource())
 v1_api.register(FavouriteResource())
 
 # Uncomment the next two lines to enable the admin:
-# from django.contrib import admin
-# admin.autodiscover()
+from django.contrib import admin
+admin.autodiscover()
 
 urlpatterns = patterns('',
     # Examples:
@@ -22,11 +22,12 @@ urlpatterns = patterns('',
     url(r'^get_businesses/', 'api.views.mobile.get_businesses'),
     url(r'^chats/(?P<user_name>\w+)/$', 'api.views.mobile.chats'),
     url(r'^business_admin/', 'api.views.web.business_admin'),
+    url(r'^add_business/', 'api.views.web.add_business'),
     # url(r'^haptik_api/', include('haptik_api.foo.urls')),
 
     # Uncomment the admin/doc line below to enable admin documentation:
     # url(r'^admin/doc/', include('django.contrib.admindocs.urls')),
 
     # Uncomment the next line to enable the admin:
-    # url(r'^admin/', include(admin.site.urls)),
+     url(r'^admin/', include(admin.site.urls)),
 )

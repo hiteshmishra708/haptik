@@ -3,14 +3,15 @@ from django.db import models
 
 class Business(models.Model):
     name = models.CharField(max_length=250)
-    xmpp_handle = models.CharField(max_length=250)
+    xmpp_handle = models.EmailField(max_length=250)
     image_name = models.CharField(max_length=250, null=True)
-    email = models.CharField(max_length=250, null=True)
-    location = models.CharField(max_length=250, null=True)
-    category = models.CharField(max_length=250, null=True)
-    website = models.CharField(max_length=250, null=True)
+    email = models.EmailField(max_length=250)
+    location = models.CharField(max_length=250)
+    category = models.CharField(max_length=250)
+    website = models.CharField(max_length=250)
     facebook = models.CharField(max_length=250, null=True)
     twitter = models.CharField(max_length=250, null=True)
+    phone_number = models.CharField(max_length=250)
     active = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True)
     modified_at = models.DateTimeField(auto_now=True)
@@ -86,6 +87,39 @@ class Faqs(models.Model):
         db_table = 'api_faqs'
         app_label= 'api'
 
+
+class Location(models.Model):
+    location = models.CharField(max_length=250)
+    active = models.BooleanField(default=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    modified_at = models.DateTimeField(auto_now=True)
+
+    def __unicode__(self):
+        return unicode_class(self)
+
+    def to_dict(self):
+        return convert_to_dict(self)
+
+    class Meta:
+        db_table = 'api_location'
+        app_label= 'api'
+
+
+class Category(models.Model):
+    category = models.CharField(max_length=250)
+    active = models.BooleanField(default=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    modified_at = models.DateTimeField(auto_now=True)
+
+    def __unicode__(self):
+        return unicode_class(self)
+
+    def to_dict(self):
+        return convert_to_dict(self)
+
+    class Meta:
+        db_table = 'api_category'
+        app_label= 'api'
 
 def unicode_class(obj):
     s = ''
