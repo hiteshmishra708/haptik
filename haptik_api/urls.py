@@ -15,6 +15,8 @@ admin.autodiscover()
 
 urlpatterns = patterns('',
     # Examples:
+    (r'^static/(?P<path>.*)$', 'django.views.static.serve',
+            {'document_root': '/home/ubuntu/haptik_api/api/static'}),
     url(r'^$', 'api.views.mobile.index', name='index'),
     url(r'^api/', include(v1_api.urls)),
     url(r'^get_chats/', 'api.views.mobile.get_chat_history'),
