@@ -1,5 +1,5 @@
 from tastypie.resources import ModelResource,  ALL, ALL_WITH_RELATIONS
-from api.models.default import Business, User, Favourite
+from api.models.default import Business, User, Favourite, Faqs
 from api.models.ejabber import Messages, Collections
 from api.lib.xmpp_lib import register_user
 from tastypie import fields
@@ -25,12 +25,9 @@ class UserResource(ModelResource):
         }
 
     def obj_create(self, bundle, **kwargs):
-        print 'in post'
-        print 'bundle : ', bundle
         bundle = super(UserResource, self).obj_create(bundle, **kwargs)
         setattr(bundle.obj, 'activate_code', '1234')
         bundle.obj.save()
-        print 'done create'
         return bundle
 
     def obj_update(self, bundle, request=None, **kwargs):
