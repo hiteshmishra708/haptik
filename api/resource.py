@@ -8,10 +8,11 @@ from tastypie.authorization import Authorization
 
 class BusinessResource(ModelResource):
     class Meta:
-        queryset = Business.objects.filter(active=1)
+        queryset = Business.objects.filter()
         resource_name = "business"
         filtering = {
             'modified_at' : ['gte' , 'lte'],
+            'id' : ALL_WITH_RELATIONS,
         }
 
 class UserResource(ModelResource):
@@ -109,3 +110,14 @@ class MessageResource(ModelResource):
         filtering = {
             'coll' : ALL_WITH_RELATIONS}
 
+
+class FaqsResource(ModelResource):
+    business = fields.ForeignKey(BusinessResource, "business")
+
+    class Meta:
+        queryset = Faqs.objects.all()
+        resource_name = "faqs"
+        excludes = ['answer']
+        filtering = {
+            'business' : ALL_WITH_RELATIONS
+        }

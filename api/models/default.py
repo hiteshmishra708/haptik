@@ -73,6 +73,7 @@ class Faqs(models.Model):
     business = models.ForeignKey(Business)
     question = models.TextField()
     answer = models.TextField()
+    relevance = models.IntegerField(default=0)
     active = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True)
     modified_at = models.DateTimeField(auto_now=True)
