@@ -15,7 +15,7 @@ def business_admin(request):
 
 def business_faqs(request, business_id):
     business = Business.objects.get(pk=business_id)
-    all_faqs = Faqs.objects.filter(business_id=business_id).all()
+    all_faqs = Faqs.objects.filter(business_id=business_id).order_by("-relevance").all()
     t = loader.get_template('faqs.html')
     c = Context({'all_faqs': all_faqs, 'business' : business})
     response = HttpResponse(t.render(c))
