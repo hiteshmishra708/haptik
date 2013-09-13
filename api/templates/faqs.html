@@ -7,13 +7,19 @@
             <tr>
                 <th>Quesion</th>
                 <th>Answer</th>
+                <th>Relevance</th>
             </tr>
         </thead>
         <tbody>
             {% for row in all_faqs %}
-                <tr>
+                <tr relevance="{{row.relevance}}" id="{{row.id}}">
                     <td> {{ row.question}}</td>
                     <td> {{ row.answer}} </td>
+                    <td id="relevance"> <div id="relevance-value">{{ row.relevance }} </div>
+                         <div class="clearfix"></div>
+                         <span class="arrow-info up"></span>
+                         <span class="arrow-danger down" data-angle="180"></span>
+                    </td>
                 </tr>
             {% endfor %}
         </tbody>

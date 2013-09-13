@@ -36,4 +36,4 @@ class FaqForm(forms.ModelForm):
     class Meta:
         business = BusinessModelChoice(queryset = Business.objects.all(),widget=BootstrapUneditableInput)
         model = Faqs
-        fields = ('business', 'question', 'answer')
+        fields = ('business', 'question', 'answer', 'relevance')

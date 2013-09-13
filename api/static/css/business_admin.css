@@ -12,3 +12,10 @@
 }
 
 
+/* changing a few arrow properties */
+.arrow, [class^="arrow-"]{
+    float: left;
+    height: 40px !important;
+}
+
+

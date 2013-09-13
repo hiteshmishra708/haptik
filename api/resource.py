@@ -118,6 +118,8 @@ class FaqsResource(ModelResource):
         queryset = Faqs.objects.all()
         resource_name = "faqs"
         excludes = ['answer']
+        authorization = Authorization()
+        always_return_data = True
         filtering = {
             'business' : ALL_WITH_RELATIONS
         }

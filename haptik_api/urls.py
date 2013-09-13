@@ -1,5 +1,5 @@
 from django.conf.urls import patterns, include, url
-from api.resource import BusinessResource, MessageResource, CollectionResource, UserResource, FavouriteResource
+from api.resource import BusinessResource, MessageResource, CollectionResource, UserResource, FavouriteResource, FaqsResource
 from tastypie.api import Api
 
 v1_api = Api(api_name="v1")
@@ -8,6 +8,7 @@ v1_api.register(UserResource())
 v1_api.register(MessageResource())
 v1_api.register(CollectionResource())
 v1_api.register(FavouriteResource())
+v1_api.register(FaqsResource())
 
 # Uncomment the next two lines to enable the admin:
 from django.contrib import admin
