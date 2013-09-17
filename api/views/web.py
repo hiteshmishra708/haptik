@@ -66,8 +66,6 @@ def add_faqs(request, business_id):
             return HttpResponseRedirect('/business_faqs/%s/' % (business_id))
     else:
         form = FaqForm(initial={'business' : business})
-    
     return render(request, 'add_faqs.html',{
         'form' : form,
     })
-        
