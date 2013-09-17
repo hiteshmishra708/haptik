@@ -1,5 +1,5 @@
 from tastypie.resources import ModelResource,  ALL, ALL_WITH_RELATIONS
-from api.models.default import Business, User, Favourite, Faqs
+from api.models.default import Business, User, Favourite, Faqs, WebsiteSignups
 from api.models.ejabber import Messages, Collections
 from api.lib.xmpp_lib import register_user
 from tastypie import fields
@@ -122,4 +122,16 @@ class FaqsResource(ModelResource):
         always_return_data = True
         filtering = {
             'business' : ALL_WITH_RELATIONS
+        }
+
+
+class WebsiteSignupResource(ModelResource):
+
+    class Meta:
+        queryset = WebsiteSignups.objects.all()
+        resource_name = "website_singup"
+        authorization = Authorization()
+        always_return_data = True
+        filtering = {
+            'number': ALL_WITH_RELATIONS
         }

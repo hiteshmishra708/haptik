@@ -122,6 +122,27 @@ class Category(models.Model):
         db_table = 'api_category'
         app_label= 'api'
 
+
+class WebsiteSignups(models.Model):
+    number = models.CharField(max_length=250)
+    country_code = models.CharField(max_length=250, default = '91')
+    text_sent = models.BooleanField(default=False)
+    downloaded = models.BooleanField(default=False)
+    active = models.BooleanField(default=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    modified_at = models.DateTimeField(auto_now=True)
+
+    def __unicode__(self):
+        return unicode_class(self)
+
+    def to_dict(self):
+        return convert_to_dict(self)
+
+    class Meta:
+        db_table = 'api_website_singups'
+        app_label= 'api'
+
+
 def unicode_class(obj):
     s = ''
     for k,v in obj.__dict__.items():
@@ -131,3 +152,5 @@ def unicode_class(obj):
 
 def convert_to_dict(obj):
     return obj.__dict__
+
+

@@ -1,5 +1,5 @@
 from django.conf.urls import patterns, include, url
-from api.resource import BusinessResource, MessageResource, CollectionResource, UserResource, FavouriteResource, FaqsResource
+from api.resource import BusinessResource, MessageResource, CollectionResource, UserResource, FavouriteResource, FaqsResource, WebsiteSignupResource
 from tastypie.api import Api
 
 v1_api = Api(api_name="v1")
@@ -9,6 +9,7 @@ v1_api.register(MessageResource())
 v1_api.register(CollectionResource())
 v1_api.register(FavouriteResource())
 v1_api.register(FaqsResource())
+v1_api.register(WebsiteSignupResource())
 
 from django.contrib import admin
 admin.autodiscover()
