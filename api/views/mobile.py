@@ -77,10 +77,11 @@ def post_message(request):
     body = request.POST.get('body')
     print 'BODY : ', body
     from_user = request.POST.get('from')
-    print 'from : ', from_user
+    business = Business.objects.get(xmpp_handle = '%s@zingcredits.com' % from_user)
+    print 'from : ', business
     to_user = User.objects.filter(number=to)[0]
     print 'FULL USER : ', to_user
-    full_body = '%s : %s' % (from_user, body)
+    full_body = '%s: %s' % (business.name, body)
     send_push_notification(to_user, full_body)
     return HttpResponse('Done')
     
