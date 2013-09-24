@@ -30,11 +30,14 @@ class Business(models.Model):
 class User(models.Model):
     number = models.CharField(max_length=250)
     country_code = models.CharField(max_length=250)
-    first_name = models.CharField(max_length=250, null=True)
+    first_name = models.CharField(max_length=250, null=True) #making this full name
     last_name = models.CharField(max_length=250, null=True)
     activate_code = models.CharField(max_length=250, null=True)
     password = models.CharField(max_length=250, null=True)
     verified = models.BooleanField(default=False)
+    email = models.EmailField(max_length=250, null=True)
+    gender = models.NullBooleanField(null=True) #0 = male, 1 = female
+    date_of_birth = models.DateTimeField(null=True)
     active = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True)
     modified_at = models.DateTimeField(auto_now=True)
@@ -124,10 +127,11 @@ class Category(models.Model):
 
 
 class WebsiteSignups(models.Model):
-    number = models.CharField(max_length=250)
     country_code = models.CharField(max_length=250, default = '91')
+    number = models.CharField(max_length=250)
     text_sent = models.BooleanField(default=False)
     downloaded = models.BooleanField(default=False)
+    os_type = models.IntegerField()
     active = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True)
     modified_at = models.DateTimeField(auto_now=True)
@@ -139,9 +143,30 @@ class WebsiteSignups(models.Model):
         return convert_to_dict(self)
 
     class Meta:
+        #TYPO NEED TO FIX IT AT SOME POINT
         db_table = 'api_website_singups'
         app_label= 'api'
+        unique_together = (("country_code", "number"),)
 
+class CountriesSupported(models.Model):
+    code = models.CharField(max_length=3)
+    country = models.CharField(max_length=250)
+    callcode = models.IntegerField()
+    numberformat = models.CharField(max_length=20)
+    active = models.BooleanField(default=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    modified_at = models.DateTimeField(auto_now=True)
+
+    def __unicode__(self):
+        return unicode_class(self)
+
+    def to_dict(self):
+        return convert_to_dict(self)
+
+    class Meta:
+        #TYPO NEED TO FIX IT AT SOME POINT
+        db_table = 'api_countries_supported'
+        app_label= 'api'
 
 def unicode_class(obj):
     s = ''

@@ -1,9 +1,10 @@
 from tastypie.resources import ModelResource,  ALL, ALL_WITH_RELATIONS
-from api.models.default import Business, User, Favourite, Faqs, WebsiteSignups
+from api.models.default import Business, User, Favourite, Faqs, WebsiteSignups, CountriesSupported
 from api.models.ejabber import Messages, Collections
 from api.lib.xmpp_lib import register_user
 from tastypie import fields
 from tastypie.authorization import Authorization
+from random import randint
 
 
 class BusinessResource(ModelResource):
@@ -27,7 +28,10 @@ class UserResource(ModelResource):
 
     def obj_create(self, bundle, **kwargs):
         bundle = super(UserResource, self).obj_create(bundle, **kwargs)
-        setattr(bundle.obj, 'activate_code', '1234')
+        print 'BUNDLE : ', bundle
+        random_number = randint(1000, 9999999)
+        setattr(bundle.obj, 'activate_code', random_number)
+        print 'BUNDLE obj: ', bundle.obj
         bundle.obj.save()
         return bundle
 
@@ -39,20 +43,22 @@ class UserResource(ModelResource):
         except Exception, e:
             print 'FIRST ERROR : ', e
             raise
-        activate_code = bundle.data['activate_code']
-        print 'activation code : ', activate_code
-        if user.activate_code != activate_code:
-            print 'CODES DONT MATCH'
-            raise 
-        try:
-            print 'regsitering user :', user.number, ' activation code: ' , activate_code
-            register_user('%s' % user.number, activate_code) 
-            user.verified = True
-            user.save()
-            print 'registered user'
-        except Exception, E:
-            print 'could not register user', e
-            raise
+        if 'activate_code' in bundle.data.keys():
+            activate_code = bundle.data['activate_code']
+            print 'activation code : ', activate_code
+            if user.activate_code != activate_code:
+                print 'CODES DONT MATCH'
+                raise 
+            try:
+                print 'regsitering user :', user.number, ' activation code: ' , activate_code
+                register_user('%s' % user.number, activate_code) 
+                user.verified = True
+                user.save()
+                print 'registered user'
+            except Exception, E:
+                print 'could not register user', e
+                raise
+        print 'bundale data: ', bundle.data
         bundle = super(UserResource, self).obj_update(bundle, request, **kwargs)
         return bundle
 
@@ -129,9 +135,18 @@ class WebsiteSignupResource(ModelResource):
 
     class Meta:
         queryset = WebsiteSignups.objects.all()
-        resource_name = "website_singup"
+        resource_name = "website_signup"
         authorization = Authorization()
         always_return_data = True
         filtering = {
             'number': ALL_WITH_RELATIONS
         }
+
+
+class CountriesSupportedResource(ModelResource):
+
+    class Meta:
+        queryset = CountriesSupported.objects.filter(active=1)
+        resource_name = "countries_supported"
+        authorization = Authorization()
+        always_return_data = True

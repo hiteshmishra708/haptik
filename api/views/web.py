@@ -6,6 +6,13 @@ from django.shortcuts import render
 from django.http import HttpResponseRedirect
 
 
+def index(request):
+    t = loader.get_template('index.html')
+    c = Context({})
+    response = HttpResponse(t.render(c))
+    return response
+    
+
 def business_admin(request):
     all_businesses = Business.objects.filter(active=1).all()
     t = loader.get_template('all_business.html')

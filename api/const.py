@@ -15,3 +15,6 @@ LOCATION_CHOICES = (
     ('India', 'India'),
     ('USA', 'United States of America')
 )
+
+OS_TYPE_IOS = 1
+OS_TYPE_ANDROID = 2
