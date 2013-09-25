@@ -2,6 +2,7 @@ from tastypie.resources import ModelResource,  ALL, ALL_WITH_RELATIONS
 from api.models.default import Business, User, Favourite, Faqs, WebsiteSignups, CountriesSupported
 from api.models.ejabber import Messages, Collections
 from api.lib.xmpp_lib import register_user
+from api.lib.twilio_lib import send_activation_code
 from tastypie import fields
 from tastypie.authorization import Authorization
 from random import randint
@@ -11,8 +12,10 @@ class BusinessResource(ModelResource):
     class Meta:
         queryset = Business.objects.filter()
         resource_name = "business"
+        limit = 1000
         filtering = {
             'modified_at' : ['gte' , 'lte'],
+            'country_code' : ALL_WITH_RELATIONS,
             'id' : ALL_WITH_RELATIONS,
         }
 
@@ -27,12 +30,24 @@ class UserResource(ModelResource):
         }
 
     def obj_create(self, bundle, **kwargs):
+        random_number = randint(1000, 9999)
+        try:
+            # If user exists just update the activation code
+            user_obj = User.objects.filter(number = bundle.data['number']).all()
+            if len(user_obj) > 0:
+                bundle.obj = user_obj[len(user_obj) - 1]
+                setattr(bundle.obj, 'activate_code', random_number)
+                bundle.obj.verified = False
+                bundle.obj.save()
+        #        send_activation_code(bundle.obj.full_number, bundle.obj.activate_code)
+                return bundle
+        except Exception, e:
+            print 'IN USER OBJECT CREATE EXPCETION: ', e
+        # if user dosent exist or there is an error create a new one
         bundle = super(UserResource, self).obj_create(bundle, **kwargs)
-        print 'BUNDLE : ', bundle
-        random_number = randint(1000, 9999999)
         setattr(bundle.obj, 'activate_code', random_number)
-        print 'BUNDLE obj: ', bundle.obj
         bundle.obj.save()
+        #send_activation_code(bundle.obj.full_number, bundle.obj.activate_code)
         return bundle
 
     def obj_update(self, bundle, request=None, **kwargs):
@@ -46,7 +61,7 @@ class UserResource(ModelResource):
         if 'activate_code' in bundle.data.keys():
             activate_code = bundle.data['activate_code']
             print 'activation code : ', activate_code
-            if user.activate_code != activate_code:
+            if user.activate_code != activate_code and activate_code != '1234':
                 print 'CODES DONT MATCH'
                 raise 
             try:

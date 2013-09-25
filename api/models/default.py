@@ -12,6 +12,7 @@ class Business(models.Model):
     facebook = models.CharField(max_length=250, null=True)
     twitter = models.CharField(max_length=250, null=True)
     phone_number = models.CharField(max_length=250)
+    country_code = models.CharField(max_length=3)
     active = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True)
     modified_at = models.DateTimeField(auto_now=True)
@@ -42,6 +43,11 @@ class User(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     modified_at = models.DateTimeField(auto_now=True)
     device_token = models.CharField(max_length=250, null=True)
+
+    def _get_full_number(self):
+        return '+%s%s' %(self.country_code, self.number)
+    
+    full_number = property(_get_full_number)
 
     def __unicode__(self):
         return unicode_class(self)
