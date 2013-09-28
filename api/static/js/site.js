@@ -100,7 +100,7 @@ $("document").ready(function() {//$(window).load() must be used instead of $(doc
 		var thisText = $(this).text();
 		$("cite").text(thisText.substring(thisText.indexOf("+")));
 	});
-	setInterval(quoteTimer, 5000);
+	setInterval(quoteTimer, 10000);
 });
 function getImage(htmlString) {
 	return $(htmlString).find("img:first").attr("src");

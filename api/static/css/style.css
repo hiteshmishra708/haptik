@@ -8,6 +8,7 @@ body {
 	margin: 0;
 	padding: 0;
 	font-family: 'Rambla', sans-serif;
+	overflow-x:hidden;
 }
 img {
 	border: none;
@@ -212,7 +213,7 @@ div.sliderkit {
 }
 aside.mobile-rt {
 	position: relative;
-	top: -116px;
+	top: -146px;
 	width: 482px;
 	float: left;
 	text-align: left;
@@ -225,7 +226,7 @@ aside.mobile-rt p {
 	font-weight: 400;
 	line-height: 20px;
 	padding: 0 0 20px;
-	text-align: left;
+	text-align: justify;
 }
 aside.mobile-rt h2 {
 	width: 482px;
@@ -466,8 +467,8 @@ section.about {
 	margin: 0 auto;
 	background: url(../img/about.jpg) center top no-repeat;
 	background-size: cover;
-	height: 1220px;
 	float: left;
+	padding-bottom: 50px;
 }
 article.aboutus {
 	width: 965px;
@@ -620,8 +621,10 @@ section.bottom {
 	width: 100%;
 	margin: 0 auto;
 	background: #003245;
-	min-height: 102px;
 	float: left;
+	position: fixed;
+	bottom: 0;
+	z-index: 999;
 }
 footer.footertxt {
 	width: 925px;

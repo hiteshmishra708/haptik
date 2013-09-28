@@ -174,6 +174,30 @@ class CountriesSupported(models.Model):
         db_table = 'api_countries_supported'
         app_label= 'api'
 
+
+class SMSLog(models.Model):
+    country_code = models.CharField(max_length=10)
+    number = models.CharField(max_length=30)
+    sms_type = models.CharField(max_length=20)
+    sms_sid = models.CharField(max_length=250, null=True)
+    sent_successfully = models.BooleanField()
+    active = models.BooleanField(default=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    modified_at = models.DateTimeField(auto_now=True)
+    error = models.TextField(null=True)
+
+    def __unicode__(self):
+        return unicode_class(self)
+
+    def to_dict(self):
+        return convert_to_dict(self)
+
+    class Meta:
+        db_table = 'api_smslog'
+        app_label= 'api'
+
+
+
 def unicode_class(obj):
     s = ''
     for k,v in obj.__dict__.items():

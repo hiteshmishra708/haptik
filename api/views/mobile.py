@@ -86,4 +86,21 @@ def post_message(request):
     return HttpResponse('Done')
     
 
+@csrf_exempt
+def log_exotel_callback(request):
+    sid = request.POST.get('SmsSid')
+    status = request.POST.get('Status')
+    log = SMSLog()
+    log.number = 'exotel'
+    log.country_code = 'exotel'
+    log.sms_type = const.kSMS_TYPE_ACTIVATION
+    if status == 'sent':
+        log.sent_successfully = True
+        log.sms_sid = sid
+    else:
+        log.sent_successfully = False
+        log.error = status
+    log.save()
+
+
 

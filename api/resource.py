@@ -1,8 +1,8 @@
 from tastypie.resources import ModelResource,  ALL, ALL_WITH_RELATIONS
 from api.models.default import Business, User, Favourite, Faqs, WebsiteSignups, CountriesSupported
 from api.models.ejabber import Messages, Collections
-from api.lib.xmpp_lib import register_user
-from api.lib.twilio_lib import send_activation_code
+from api.lib.xmpp_lib import register_user, unregister_user
+from api.lib.sms_lib import send_activation_code
 from tastypie import fields
 from tastypie.authorization import Authorization
 from random import randint
@@ -32,14 +32,15 @@ class UserResource(ModelResource):
     def obj_create(self, bundle, **kwargs):
         random_number = randint(1000, 9999)
         try:
-            # If user exists just update the activation code
+            # If user exists unregister on XMPP server and  update the activation code
             user_obj = User.objects.filter(number = bundle.data['number']).all()
             if len(user_obj) > 0:
                 bundle.obj = user_obj[len(user_obj) - 1]
+                unregister_user(bundle.obj.number, bundle.obj.activate_code)
                 setattr(bundle.obj, 'activate_code', random_number)
                 bundle.obj.verified = False
                 bundle.obj.save()
-        #        send_activation_code(bundle.obj.full_number, bundle.obj.activate_code)
+                send_activation_code(str(bundle.obj.country_code), str(bundle.obj.number), str(bundle.obj.activate_code))
                 return bundle
         except Exception, e:
             print 'IN USER OBJECT CREATE EXPCETION: ', e
@@ -47,7 +48,7 @@ class UserResource(ModelResource):
         bundle = super(UserResource, self).obj_create(bundle, **kwargs)
         setattr(bundle.obj, 'activate_code', random_number)
         bundle.obj.save()
-        #send_activation_code(bundle.obj.full_number, bundle.obj.activate_code)
+        send_activation_code(str(bundle.obj.country_code), str(bundle.obj.number), str(bundle.obj.activate_code))
         return bundle
 
     def obj_update(self, bundle, request=None, **kwargs):
@@ -164,4 +165,5 @@ class CountriesSupportedResource(ModelResource):
         queryset = CountriesSupported.objects.filter(active=1)
         resource_name = "countries_supported"
         authorization = Authorization()
+        ordering = ["country"]
         always_return_data = True

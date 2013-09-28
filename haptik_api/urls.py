@@ -32,5 +32,6 @@ urlpatterns = patterns('',
     url(r'^add_business/', 'api.views.web.add_business'),
     url(r'^business_faqs/(?P<business_id>\d+)/$', 'api.views.web.business_faqs'),
     url(r'^add_faqs/(?P<business_id>\d+)/$', 'api.views.web.add_faqs'),
+    url(r'^log_exotel_callback/', 'api.views.mobile.log_exotel_callback'),
     url(r'^admin/', include(admin.site.urls)),
 )
