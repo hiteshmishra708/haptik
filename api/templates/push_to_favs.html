@@ -1,0 +1,12 @@
+
+{% extends "base.html" %}
+{% block content %}
+    <div style="padding-top: 10px;">
+        <div class="span4"><b>Message :</b></div>
+        <textarea class="span8" rows="4" cols="50" max_length="2000" id="message">
+        </textarea>
+    </div>
+
+    <button type="button" class="btn btn-primary" id="send_message" value="{{business_id}}">Send</button>
+    <button class="btn btn-inverse" type="button" id="back_to_business"  value="{{ business_id }}">Back</button>
+{% endblock %}

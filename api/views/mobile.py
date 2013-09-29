@@ -88,6 +88,7 @@ def post_message(request):
 
 @csrf_exempt
 def log_exotel_callback(request):
+    print 'IN EXOTEL CALLBACK: ' , request
     sid = request.POST.get('SmsSid')
     status = request.POST.get('Status')
     log = SMSLog()
@@ -101,6 +102,7 @@ def log_exotel_callback(request):
         log.sent_successfully = False
         log.error = status
     log.save()
+    return HttpResponse('Done')
 
 
 

@@ -3,7 +3,8 @@ from django.http import HttpResponse
 from api.models.default import Business, Faqs
 from api.form import BusinessForm, FaqForm, Category, Location
 from django.shortcuts import render
-from django.http import HttpResponseRedirect
+from api.lib.xmpp_lib import send_push_from_business_to_favs
+from django.views.decorators.csrf import csrf_exempt, csrf_protect
 
 
 def index(request):
@@ -28,6 +29,24 @@ def business_faqs(request, business_id):
     response = HttpResponse(t.render(c))
     return response
 
+
+def push_to_favs(request, business_id):
+    t = loader.get_template('push_to_favs.html')
+    c = Context({'business_id': business_id})
+    response = HttpResponse(t.render(c))
+    return response
+
+def ajax_send_message(request):
+    print 'in AJAX send message: ', request
+    if request.method == 'POST':
+        business_id = request.POST.get('business_id')
+        message = request.POST.get('message')
+        message = message.strip()
+        business_id = int(business_id.strip())
+        print 'message: ' , message
+        print 'business_id: ', business_id
+        return HttpResponse(True)
+    return HttpResponse(False)
 
 def add_business(request, business_id=0):
     if request.method == 'POST':
