@@ -8,8 +8,9 @@
         <div class="form-actions">
             <button type="submit" class="btn btn-primary">Submit</button>
             {% if form.initial.id %}
-                <button type=button class="btn btn-info" value={{form.initial.id}} id="show_faqs">FAQs</button>
+                <button type=button class="btn btn-primary" value={{form.initial.id}} id="show_faqs">FAQs</button>
             {% endif %}
+            <button type=button class="btn btn-info" value={{form.initial.id}} id="push_to_favs">Send Message to Favs</button>
             <button type=button class="btn btn-danger" id="back_to_admin">Cancel</button>
         </div>
     </form>

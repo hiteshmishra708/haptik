@@ -33,7 +33,7 @@ urlpatterns = patterns('',
     url(r'^business_faqs/(?P<business_id>\d+)/$', 'api.views.web.business_faqs'),
     url(r'^add_faqs/(?P<business_id>\d+)/$', 'api.views.web.add_faqs'),
     url(r'^push_to_favs/(?P<business_id>\d+)/$', 'api.views.web.push_to_favs'),
-    url(r'^ajax_send_message/', 'api.views.web.ajax_send_message'),
+    url(r'^ajax_send_message/(?P<business_id>\d+)/$', 'api.views.web.ajax_send_message'),
     url(r'^log_exotel_callback/', 'api.views.mobile.log_exotel_callback'),
     url(r'^admin/', include(admin.site.urls)),
 )

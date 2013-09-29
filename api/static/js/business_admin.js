@@ -105,14 +105,21 @@ $(function(){
 });
 
 $(function(){
+    $("#push_to_favs").click(function(){
+        var businessId = $(this).attr('value');
+        window.location = '/push_to_favs/' + businessId + '/';
+    })
+});
+
+$(function(){
     $("#send_message").click(function(){
-        var business_id = $(this).attr("value");
+        var businessId = $(this).attr("value");
         var message = $("textarea#message").val();
         console.log('sending message');
         $.ajax({
-            type: 'POST',
-            url: '/ajax_send_message/',
-            data: JSON.stringify({ 'business_id' : business_id , 'message' : message}),
+            type: 'GET',
+            url: '/ajax_send_message/' + businessId + '/',
+            data: { 'business_id' : businessId , 'message' : message},
             headers: {
                 "Content-Type" : "application/json"
             },

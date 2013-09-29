@@ -1,5 +1,5 @@
 from django.template import Context, loader
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseRedirect
 from api.models.default import Business, Faqs
 from api.form import BusinessForm, FaqForm, Category, Location
 from django.shortcuts import render
@@ -36,15 +36,16 @@ def push_to_favs(request, business_id):
     response = HttpResponse(t.render(c))
     return response
 
-def ajax_send_message(request):
-    print 'in AJAX send message: ', request
-    if request.method == 'POST':
-        business_id = request.POST.get('business_id')
-        message = request.POST.get('message')
+
+# TODO: CANT MAKE POST WORK HERE. NEED TO REVISIT
+# WHEN I SEND a POST NO DATA COMES THROUGH
+def ajax_send_message(request, business_id):
+    if request.method == 'GET':
+        business_id = request.GET.get('business_id')
+        message = request.GET.get('message')
         message = message.strip()
         business_id = int(business_id.strip())
-        print 'message: ' , message
-        print 'business_id: ', business_id
+        send_push_from_business_to_favs(business_id, message)
         return HttpResponse(True)
     return HttpResponse(False)
 
