@@ -6,6 +6,8 @@ from api.lib.sms_lib import send_activation_code
 from tastypie import fields
 from tastypie.authorization import Authorization
 from random import randint
+import urllib
+from django.utils.encoding import *
 
 
 class BusinessResource(ModelResource):
@@ -33,12 +35,15 @@ class UserResource(ModelResource):
         random_number = randint(1000, 9999)
         try:
             # If user exists unregister on XMPP server and  update the activation code
-            user_obj = User.objects.filter(number = bundle.data['number']).all()
+            user_obj = User.objects.filter(number = bundle.data['number'].strip()).all()
+            user_name = urllib.unquote(bundle.data.get('first_name'))
             if len(user_obj) > 0:
                 bundle.obj = user_obj[len(user_obj) - 1]
                 unregister_user(bundle.obj.number, bundle.obj.activate_code)
                 setattr(bundle.obj, 'activate_code', random_number)
+                setattr(bundle.obj, 'first_name', user_name)
                 bundle.obj.verified = False
+                bundle.obj.first_name = smart_text(bundle.obj.first_name)
                 bundle.obj.save()
                 send_activation_code(str(bundle.obj.country_code), str(bundle.obj.number), str(bundle.obj.activate_code))
                 return bundle
@@ -47,6 +52,8 @@ class UserResource(ModelResource):
         # if user dosent exist or there is an error create a new one
         bundle = super(UserResource, self).obj_create(bundle, **kwargs)
         setattr(bundle.obj, 'activate_code', random_number)
+        setattr(bundle.obj, 'first_name', urllib.unquote(bundle.obj.first_name))
+        bundle.obj.first_name = smart_text(bundle.obj.first_name)
         bundle.obj.save()
         send_activation_code(str(bundle.obj.country_code), str(bundle.obj.number), str(bundle.obj.activate_code))
         return bundle
@@ -87,11 +94,20 @@ class FavouriteResource(ModelResource):
         queryset = Favourite.objects.filter(active=1)
         authorization = Authorization()
         resource_name = "favourite"
+        allowed = ['get', 'put', 'patch', 'post']
         ordering = ["id"]
         always_return_data = True
         filtering = {
             'user' : ALL_WITH_RELATIONS
         }
+    
+#FOR SOEM ODD REASON THIS PUT IS NOT WORKING. SO I HAD TO OVERRIDE IT
+    def obj_update(self, bundle, request=None, **kwargs):
+        faq_id = int(kwargs['pk'])
+        bundle.obj = Favourite.objects.get(id=faq_id)
+        bundle.obj.active = bundle.data.get('active')
+        bundle.obj.save()
+        return bundle
 
 
 class CollectionResource(ModelResource):

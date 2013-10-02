@@ -8,11 +8,12 @@
                 <th>Quesion</th>
                 <th>Answer</th>
                 <th>Relevance</th>
+                <th>Active</th>
             </tr>
         </thead>
         <tbody>
             {% for row in all_faqs %}
-                <tr relevance="{{row.relevance}}" id="{{row.id}}">
+                <tr class="business_faqs" business_id="{{business.id}}" relevance="{{row.relevance}}" id="{{row.id}}">
                     <td> {{ row.question}}</td>
                     <td> {{ row.answer}} </td>
                     <td id="relevance"> <div id="relevance-value">{{ row.relevance }} </div>
@@ -20,6 +21,7 @@
                          <span class="arrow-info up"></span>
                          <span class="arrow-danger down" data-angle="180"></span>
                     </td>
+                    <td> {{ row.active }} </td>
                 </tr>
             {% endfor %}
         </tbody>

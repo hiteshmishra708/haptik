@@ -1,6 +1,6 @@
 from django.template import Context, loader
 from django.http import HttpResponse, HttpResponseRedirect
-from api.models.default import Business, Faqs
+from api.models.default import Business, Faqs, CountriesSupported
 from api.form import BusinessForm, FaqForm, Category, Location
 from django.shortcuts import render
 from api.lib.xmpp_lib import send_push_from_business_to_favs
@@ -60,7 +60,8 @@ def add_business(request, business_id=0):
             # TODO: in the future see if you can make it foreign keys
             # and it still works with the iphone API
             new_business = form.save(commit=False)
-            new_business.location = form.cleaned_data['location'].location
+            new_business.location = form.cleaned_data['location'].country
+            new_business.country_code = form.cleaned_data['location'].code
             new_business.category = form.cleaned_data['category'].category
             new_business.save()
             return HttpResponseRedirect('/business_admin/')
@@ -71,12 +72,13 @@ def add_business(request, business_id=0):
             business_location = None
             try:
                 business_category = Category.objects.get(category=business.category)
-                business_location = Location.objects.get(location=business.location)
+                business_location = CountriesSupported.objects.get(country=business.location)
+
             except:
                 pass
             form = BusinessForm(instance=business, initial={
                 'category' : business_category,
-                'location' : business_location
+                'location' : business_location,
             })
         else:
             form = BusinessForm()
@@ -84,15 +86,30 @@ def add_business(request, business_id=0):
         'form' : form,
     })
 
-def add_faqs(request, business_id):
+def add_faqs(request, business_id, faq_id=0):
     business = Business.objects.get(pk=business_id)
     if request.method == 'POST':
-        form = FaqForm(request.POST)
+        if faq_id:
+            faq = Faqs.objects.get(pk=faq_id)
+            form = FaqForm(request.POST, instance=faq)
+        else:
+            form = FaqForm(request.POST)
         if form.is_valid:
             form.save()
             return HttpResponseRedirect('/business_faqs/%s/' % (business_id))
     else:
-        form = FaqForm(initial={'business' : business})
+        if faq_id:
+            faq = Faqs.objects.get(id=faq_id)
+            print 'FAQ:' , faq
+            form = FaqForm(instance=faq, initial={
+                'business' : business,
+                'question' : faq.question,
+                'answer' : faq.answer,
+                'relevance' : faq.relevance
+            })
+        else:
+            form = FaqForm(initial={'business' : business})
+        print 'getting form : ', form.instance
     return render(request, 'add_faqs.html',{
         'form' : form,
     })
