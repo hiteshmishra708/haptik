@@ -4,7 +4,7 @@ import os
 SITE_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 DEBUG = True
-TASTYPIE_FULL_DEBUG = True
+#TASTYPIE_FULL_DEBUG = True
 TEMPLATE_DEBUG = DEBUG
 
 ADMINS = (

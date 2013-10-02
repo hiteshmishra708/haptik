@@ -81,7 +81,11 @@ class UserResource(ModelResource):
             except Exception, E:
                 print 'could not register user', e
                 raise
-        print 'bundale data: ', bundle.data
+        if 'subtract_number' in bundle.data.keys():
+            subtract_number = int(bundle.data.get('subtract_number'))
+            if user.unread >= subtract_number:
+                user.unread = user.unread - subtract_number
+                user.save()
         bundle = super(UserResource, self).obj_update(bundle, request, **kwargs)
         return bundle
 
