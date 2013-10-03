@@ -8,7 +8,7 @@ body {
 	margin: 0;
 	padding: 0;
 	font-family: 'Rambla', sans-serif;
-	overflow-x:hidden;
+	overflow-x: hidden;
 }
 img {
 	border: none;
@@ -66,11 +66,18 @@ section.hate {
 	background: #033142;
 	height: 1098px;
 	float: left;
+	background: #050c1c; /* Old browsers */
+	background: -moz-linear-gradient(top, #050c1c 0%, #209acc 100%); /* FF3.6+ */
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#050c1c), color-stop(100%,#209acc)); /* Chrome,Safari4+ */
+	background: -webkit-linear-gradient(top, #050c1c 0%,#209acc 100%); /* Chrome10+,Safari5.1+ */
+	background: -o-linear-gradient(top, #050c1c 0%,#209acc 100%); /* Opera 11.10+ */
+	background: -ms-linear-gradient(top, #050c1c 0%,#209acc 100%); /* IE10+ */
+	background: linear-gradient(to bottom, #050c1c 0%,#209acc 100%); /* W3C */
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#050c1c', endColorstr='#209acc',GradientType=0 ); /* IE6-9 */
 }
 section.hateinout {
 	width: 100%;
 	margin: 0 auto;
-	background: url(../img/iphone.jpg) center bottom no-repeat;
 	height: 1098px;
 }
 header.header {
@@ -144,7 +151,7 @@ article.hatein h6 {
 	text-align: center;
 	padding: 10px 10px 0;
 	position: absolute;
-	top: 321px;
+	top: 301px;
 	left: 450px;
 	margin-left: -215px;
 	width: 450px;
@@ -161,6 +168,7 @@ ul.enter {
 	float: left;
 	padding: 55px 0 0 145px;
 	z-index: 9999;
+	position:relative;
 }
 ul.enter li {
 	width: 673px;
@@ -213,11 +221,13 @@ div.sliderkit {
 }
 aside.mobile-rt {
 	position: relative;
-	top: -146px;
-	width: 482px;
+	top: -126px;
+	width: 772px;
 	float: left;
 	text-align: left;
-	padding: 120px 0 0;
+	padding: 30px 20px 0 0px;
+	left: 50%;
+	margin-left: -416px;
 }
 aside.mobile-rt p {
 	color: #fff;
@@ -225,7 +235,7 @@ aside.mobile-rt p {
 	font-size: 16px;
 	font-weight: 400;
 	line-height: 20px;
-	padding: 0 0 20px;
+	padding: 60px 0 20px;
 	text-align: justify;
 }
 aside.mobile-rt h2 {
@@ -650,8 +660,7 @@ footer.footertxt ul li a {
 }
 footer.footertxt ul li.launch a {
 	float: left;
-	width: 210px;
-	padding: 14px 0 0;
+	padding: 14px 10px 0;
 	font-family: 'Rambla', sans-serif;
 	font-size: 12px;
 	font-weight: 700;
@@ -810,33 +819,46 @@ div.uiIconText span {
 #google.shareButton:active {
 	background-image: url("/static/img/plusoneactive.png");
 }
-.socialprofile{
-	display:inline-block;
-	width:20px;
-	height:20px;
+.socialprofile {
+	display: inline-block;
+	width: 20px;
+	height: 20px;
 	background-size: 20px 20px
 }
-.twitter{
+.twitter {
 	background-image: url("/static/img/twitter.png");
 }
-.twitter:active{
+.twitter:active {
 	background-image: url("/static/img/twitteractive.png");
 }
-.facebook{
+.facebook {
 	background-image: url("/static/img/facebook.png");
 }
-.facebook:active{
+.facebook:active {
 	background-image: url("/static/img/facebookactive.png");
 }
-.linkedin{
+.linkedin {
 	background-image: url("/static/img/linkedin.png");
 }
-.linkedin:active{
+.linkedin:active {
 	background-image: url("/static/img/linkedinactive.png");
 }
-.google{
+.google {
 	background-image: url("/static/img/plusone.png");
 }
-.google:active{
+.google:active {
 	background-image: url("/static/img/plusoneactive.png");
+}
+.socialfollow {
+	width: 30px;
+	height: 30px;
+	display: block;
+	background-size: 30px;
+	margin-top: 5px;
+}
+#twitterlink.socialfollow {
+	background-image: url("/static/img/twitterlink.png");
+}
+#facebooklink.socialfollow {
+	background-image: url("/static/img/facebooklink.png");
 }

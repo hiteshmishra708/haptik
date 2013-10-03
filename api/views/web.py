@@ -3,8 +3,9 @@ from django.http import HttpResponse, HttpResponseRedirect
 from api.models.default import Business, Faqs, CountriesSupported
 from api.form import BusinessForm, FaqForm, Category, Location
 from django.shortcuts import render
-from api.lib.xmpp_lib import send_push_from_business_to_favs
+from api.lib.xmpp_lib import send_push_from_business_to_favs, register_user
 from django.views.decorators.csrf import csrf_exempt, csrf_protect
+from api import const
 
 
 def index(request):
@@ -64,6 +65,9 @@ def add_business(request, business_id=0):
             new_business.country_code = form.cleaned_data['location'].code
             new_business.category = form.cleaned_data['category'].category
             new_business.save()
+            xmpp_handle = new_business.xmpp_handle
+            user_name = xmpp_handle.replace('@%s' % const.kXMPP_SERVER_DOMAIN, '')
+            register_user(user_name, 'password')
             return HttpResponseRedirect('/business_admin/')
     else:
         if(business_id):

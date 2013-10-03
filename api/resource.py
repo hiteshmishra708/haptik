@@ -87,6 +87,9 @@ class UserResource(ModelResource):
                 user.unread = user.unread - subtract_number
                 user.save()
         bundle = super(UserResource, self).obj_update(bundle, request, **kwargs)
+        setattr(bundle.obj, 'first_name', urllib.unquote(bundle.obj.first_name))
+        bundle.obj.first_name = smart_text(bundle.obj.first_name)
+        bundle.obj.save()
         return bundle
 
 

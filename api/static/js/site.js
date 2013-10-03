@@ -1,66 +1,5 @@
 var whichQuote = true;
 $("document").ready(function() {//$(window).load() must be used instead of $(document).ready() because of Webkit compatibility
-	$(".photosgallery-std").sliderkit({
-		mousewheel : false,
-		circular : true,
-		shownavitems : 1,
-		scroll : 1,
-		panelbtnshover : true,
-		auto : true,
-		navscrollatend : false,
-		counter : true
-	});
-	var myGallery = $('.photosgallery-std').data('sliderkit');
-	var myPaginStr = '';
-	var myPaginCount = 0;
-	// Building the pagination tag
-	$('li', myGallery.navUL).each(function() {
-		myPaginStr += '<li><a href="#" rel="' + myPaginCount + '">' + (myPaginCount + 1) + '</a></li>';
-		myPaginCount++;
-	});
-	//myGallery.domObj.before('<div id="myPagination1" class="sliderkit-pagination"><ul>'+myPaginStr+'</ul></div>');
-	// Selecting first item
-	var myPaginTag = $('#myPagination1'), myPaginItems = $('li', myPaginTag);
-	myPaginItems.eq(myGallery.options.start).addClass('selected');
-	// Pagination items click event
-	$('a', myPaginTag).click(function() {
-		var $a = $(this);
-		if (! $a.parent().hasClass('selected')) {
-			myGallery.changeWithId($a.attr('rel'));
-		}
-		return false;
-	});
-	// Selecting current pagination item
-	myGallery.options.panelfxbefore = function() {
-		myPaginItems.removeClass('selected');
-		myPaginItems.eq(myGallery.currId).addClass('selected');
-	}
-	$('#playbtn').click(function() {
-		if (myGallery.isPlaying != null) {
-			myGallery.autoScrollStop();
-		} else {
-			myGallery.autoScrollStart();
-			myGallery._autoScrollHoverStop();
-		}
-		return false;
-	});
-	$('#startslide').click(function() {
-		myGallery._wrapPanels();
-		myGallery.imageFx.remove();
-		myGallery.options.panelfx = 'sliding';
-		myGallery.options.panelfxeasing = 'easeInOutExpo';
-		myGallery.stepForward();
-		return false;
-	});
-	$('#startfancy').click(function() {
-		myGallery.options.panelfx = 'fancy';
-		myGallery.options.imagefx = {
-			fxType : 'random'
-		};
-		myGallery.imageFx.init();
-		return false;
-	});
-
 	$("a#submitno").click(function(e) {
 		e.preventDefault();
 		submitNo();
@@ -99,11 +38,43 @@ $("document").ready(function() {//$(window).load() must be used instead of $(doc
 		e.preventDefault();
 		var thisText = $(this).text();
 		$("cite").text(thisText.substring(thisText.indexOf("+")));
+		if (thisText.indexOf("India") != -1) {
+			$("img#screenshot").attr("src", "/static/img/iphoneblack.png");
+		} else {
+			$("img#screenshot").attr("src", "/static/img/iphonerow.png");
+		}
 	});
 	setInterval(quoteTimer, 10000);
+	getCountry();
 });
 function getImage(htmlString) {
 	return $(htmlString).find("img:first").attr("src");
+}
+
+function getCountry() {
+	if (navigator.geolocation) {
+		navigator.geolocation.getCurrentPosition(function(position) {
+			$.getJSON('http://ws.geonames.org/countryCode', {
+				lat : position.coords.latitude,
+				lng : position.coords.longitude,
+				type : 'JSON'
+			}, function(result) {
+				if (result.countryCode === "IN") {
+					$("img#screenshot").attr("src", "/static/img/iphoneblack.png");
+					$("li cite").text("+91");
+				} else if (result.countryCode === "AE") {
+					$("img#screenshot").attr("src", "/static/img/iphonerow.png");
+					$("li cite").text("+971");
+				} else if (result.countryCode === "SN") {
+					$("img#screenshot").attr("src", "/static/img/iphonerow.png");
+					$("li cite").text("+65");
+				} else if (result.countryCode === "US") {
+					$("img#screenshot").attr("src", "/static/img/iphonerow.png");
+					$("li cite").text("+1");
+				}
+			});
+		});
+	}
 }
 
 function checkIfHuman(title) {
@@ -183,7 +154,7 @@ function sendNo() {
 	var no = ($("input#s-head").attr('value'));
 	no = no.trim();
 	var countrycode = $("cite").text();
-	countrycode = countrycode.replace("+", "");
+	countrycode = countrycode.replace("+", "").trim();
 	var data = {
 		"country_code" : countrycode,
 		"number" : no,
@@ -252,23 +223,24 @@ function quoteTimer() {
 		});
 	});
 }
+
 function setBlog(data) {
-				var ulHTML = "";
-				$("h2#blogTitle").html(data.posts[0]['regular-title']);
-				var postHTML = data.posts[0]['regular-body'];
-				$("div#postImage").css("background-image", 'url(' + $(postHTML).find('img:first').attr("src") + ')');
-				$("p#slug").text($(postHTML).text());
-				$("a#fullStory").attr("href", data.posts[0].url);
-				$("a#fullStory").attr("href", data.posts[0].url);
-				$(".ellipsis").ellipsis();
-				if (data.posts.length == 1) {
-					$("#morePosts").css("display", "none");
-				}
-				for (var i = 1; i < data.posts.length; i++) {
-					ulHTML += generateAlsoRead(data.posts[i]);
-				}
-				$("ul#morePosts").html(ulHTML);
-			}
+	var ulHTML = "";
+	$("h2#blogTitle").html(data.posts[0]['regular-title']);
+	var postHTML = data.posts[0]['regular-body'];
+	$("div#postImage").css("background-image", 'url(' + $(postHTML).find('img:first').attr("src") + ')');
+	$("p#slug").text($(postHTML).text());
+	$("a#fullStory").attr("href", data.posts[0].url);
+	$("a#fullStory").attr("href", data.posts[0].url);
+	$(".ellipsis").ellipsis();
+	if (data.posts.length == 1) {
+		$("#morePosts").css("display", "none");
+	}
+	for (var i = 1; i < data.posts.length; i++) {
+		ulHTML += generateAlsoRead(data.posts[i]);
+	}
+	$("ul#morePosts").html(ulHTML);
+}
 
 $.fn.enterKey = function(fnc) {
 	return this.each(function() {

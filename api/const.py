@@ -20,3 +20,5 @@ kSMS_TYPE_ACTIVATION = 'activation'
 
 OS_TYPE_IOS = 1
 OS_TYPE_ANDROID = 2
+
+kXMPP_SERVER_DOMAIN = 'zingcredits.com'
