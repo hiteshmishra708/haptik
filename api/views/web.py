@@ -1,6 +1,6 @@
 from django.template import Context, loader
 from django.http import HttpResponse, HttpResponseRedirect
-from api.models.default import Business, Faqs, CountriesSupported
+from api.models.default import Business, Faqs, CountriesSupported, User
 from api.form import BusinessForm, FaqForm, Category, Location
 from django.shortcuts import render
 from api.lib.xmpp_lib import send_push_from_business_to_favs, register_user
@@ -45,8 +45,10 @@ def ajax_send_message(request, business_id):
         business_id = request.GET.get('business_id')
         message = request.GET.get('message')
         message = message.strip()
+        message = '%s %s' % (const.kSTARTING_FAV_WORD, message)
+        print 'MESSAGE:' , message.strip()
         business_id = int(business_id.strip())
-        send_push_from_business_to_favs(business_id, message)
+        send_push_from_business_to_favs(business_id, message.strip())
         return HttpResponse(True)
     return HttpResponse(False)
 
@@ -67,7 +69,11 @@ def add_business(request, business_id=0):
             new_business.save()
             xmpp_handle = new_business.xmpp_handle
             user_name = xmpp_handle.replace('@%s' % const.kXMPP_SERVER_DOMAIN, '')
-            register_user(user_name, 'password')
+            try:
+                register_user(user_name, 'password')
+            except Exception, e:
+                print 'business handle was not created'
+                print 'user name: ',xmpp_handle 
             return HttpResponseRedirect('/business_admin/')
     else:
         if(business_id):
@@ -89,6 +95,9 @@ def add_business(request, business_id=0):
     return render(request, 'add_business.html',{
         'form' : form,
     })
+
+def resend_activation(request, user_id):
+    
 
 def add_faqs(request, business_id, faq_id=0):
     business = Business.objects.get(pk=business_id)

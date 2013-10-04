@@ -64,7 +64,7 @@ section.hate {
 	width: 100%;
 	margin: 0 auto;
 	background: #033142;
-	height: 1098px;
+	height: 1228px;
 	float: left;
 	background: #050c1c; /* Old browsers */
 	background: -moz-linear-gradient(top, #050c1c 0%, #209acc 100%); /* FF3.6+ */
@@ -78,7 +78,7 @@ section.hate {
 section.hateinout {
 	width: 100%;
 	margin: 0 auto;
-	height: 1098px;
+	height: 1228px;
 }
 header.header {
 	width: 955px;
@@ -168,7 +168,7 @@ ul.enter {
 	float: left;
 	padding: 55px 0 0 145px;
 	z-index: 9999;
-	position:relative;
+	position: relative;
 }
 ul.enter li {
 	width: 673px;
@@ -221,7 +221,7 @@ div.sliderkit {
 }
 aside.mobile-rt {
 	position: relative;
-	top: -126px;
+	top: -66px;
 	width: 772px;
 	float: left;
 	text-align: left;
@@ -252,7 +252,7 @@ section.forbusiness {
 	width: 100%;
 	margin: 0 auto;
 	background: url(../img/for.jpg) center top no-repeat;
-	height: 646px;
+	height: 750px;
 	float: left;
 	background-size: cover;
 }
@@ -715,6 +715,7 @@ div#checkIfHuman {
 	background: rgba(0,0,0,0.5);
 	color: #fafafa;
 	text-align: center;
+	z-index: 9999;
 }
 div#outsideContainer {
 	position: fixed;
@@ -849,16 +850,7 @@ div.uiIconText span {
 .google:active {
 	background-image: url("/static/img/plusoneactive.png");
 }
-.socialfollow {
-	width: 30px;
-	height: 30px;
-	display: block;
-	background-size: 30px;
-	margin-top: 5px;
-}
-#twitterlink.socialfollow {
-	background-image: url("/static/img/twitterlink.png");
-}
-#facebooklink.socialfollow {
-	background-image: url("/static/img/facebooklink.png");
+.socialbuttons {
+	margin-top: 8px;
+	margin-left: 15px;
 }

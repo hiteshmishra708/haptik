@@ -17,8 +17,11 @@ LOCATION_CHOICES = (
 )
 
 kSMS_TYPE_ACTIVATION = 'activation'
+kSMS_TYPE_WEBSITE_SIGNUP = 'signup'
 
 OS_TYPE_IOS = 1
 OS_TYPE_ANDROID = 2
 
 kXMPP_SERVER_DOMAIN = 'zingcredits.com'
+
+kSTARTING_FAV_WORD= 'Info:'

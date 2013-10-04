@@ -1,5 +1,10 @@
 var whichQuote = true;
+var debugging = false;
 $("document").ready(function() {//$(window).load() must be used instead of $(document).ready() because of Webkit compatibility
+	var query = get_query();
+	if (query.debug === "true"){
+		debugging = true;
+	}
 	$("a#submitno").click(function(e) {
 		e.preventDefault();
 		submitNo();
@@ -14,24 +19,21 @@ $("document").ready(function() {//$(window).load() must be used instead of $(doc
 	});
 	$("cite").hover(function(e) {
 		$("li.callingCode").css("display", "block");
-		$("h6.facebooklike").css("display", "none");
+		//$("h6.facebooklike").css("display", "none");
 	}, function(e) {
-		//console.log("out");
 		$("li.callingCode").css("display", "none");
-		$("h6.facebooklike").css("display", "block");
+		//$("h6.facebooklike").css("display", "block");
 
 	});
 	$("ul#chooseCallingCode").hover(function(e) {
 		$("li.callingCode").css("display", "block");
-		$("h6.facebooklike").css("display", "none");
+		//$("h6.facebooklike").css("display", "none");
 	}, function(e) {
-		//console.log("out");
 		$("li.callingCode").css("display", "none");
-		$("h6.facebooklike").css("display", "block");
+		//$("h6.facebooklike").css("display", "block");
 
 	});
 	$("article.hatein").hover(function(e) {
-		//console.log("in");
 	}, function(e) {
 	});
 	$("li.callingCode").click(function(e) {
@@ -41,7 +43,7 @@ $("document").ready(function() {//$(window).load() must be used instead of $(doc
 		if (thisText.indexOf("India") != -1) {
 			$("img#screenshot").attr("src", "/static/img/iphoneblack.png");
 		} else {
-			$("img#screenshot").attr("src", "/static/img/iphonerow.png");
+			$("img#screenshot").attr("src", "/static/img/iphoneblackrow.png");
 		}
 	});
 	setInterval(quoteTimer, 10000);
@@ -52,33 +54,25 @@ function getImage(htmlString) {
 }
 
 function getCountry() {
-	if (navigator.geolocation) {
-		navigator.geolocation.getCurrentPosition(function(position) {
-			$.getJSON('http://ws.geonames.org/countryCode', {
-				lat : position.coords.latitude,
-				lng : position.coords.longitude,
-				type : 'JSON'
-			}, function(result) {
-				if (result.countryCode === "IN") {
-					$("img#screenshot").attr("src", "/static/img/iphoneblack.png");
-					$("li cite").text("+91");
-				} else if (result.countryCode === "AE") {
-					$("img#screenshot").attr("src", "/static/img/iphonerow.png");
-					$("li cite").text("+971");
-				} else if (result.countryCode === "SN") {
-					$("img#screenshot").attr("src", "/static/img/iphonerow.png");
-					$("li cite").text("+65");
-				} else if (result.countryCode === "US") {
-					$("img#screenshot").attr("src", "/static/img/iphonerow.png");
-					$("li cite").text("+1");
-				}
-			});
-		});
+	log(codehelper_ip);
+	if (codehelper_ip.Country === "IN") {
+		$("img#screenshot").attr("src", "/static/img/iphoneblack.png");
+		$("li cite").text("+91");
+	} else if (result.countryCode === "AE") {
+		$("img#screenshot").attr("src", "/static/img/iphoneblackrow.png");
+		$("li cite").text("+971");
+	} else if (result.countryCode === "SN") {
+		$("img#screenshot").attr("src", "/static/img/iphoneblackrow.png");
+		$("li cite").text("+65");
+	} else if (result.countryCode === "US") {
+		$("img#screenshot").attr("src", "/static/img/iphoneblackrow.png");
+		$("li cite").text("+1");
 	}
 }
 
 function checkIfHuman(title) {
 	$("h1#checkTitle").html(title);
+	$("body").css("overflow", "hidden");
 	$("div#checkIfHuman").css("display", "block");
 	var first = Math.floor((Math.random() * 5) + 1);
 	var second = Math.floor((Math.random() * 5) + 1);
@@ -122,10 +116,8 @@ function checkIfHuman(title) {
 		e.preventDefault();
 		var answer = $(this).html();
 		if (answer === sum + "") {
-			//console.log("correct");
 			sendNo();
 		} else {
-			//console.log("wrong");
 			checkIfHuman("Oops, you were wrong<br>Let's try that again");
 		}
 	});
@@ -137,11 +129,12 @@ function checkIfHuman(title) {
 
 function hideTest() {
 	$("div#checkIfHuman").css("display", "none");
+	$("body").css("overflow", "inherit");
+	$("input#s-head").attr("value", "Enter your mobile number for early access");
 }
 
 function submitNo() {
 	var no = $("input#s-head").attr("value");
-	//console.log(no);
 	if (!isNaN(no)) {
 		checkIfHuman("Just double-checking that you are human");
 	} else {
@@ -163,7 +156,7 @@ function sendNo() {
 	$("h1#checkTitle").html("Sending...");
 	$("p#checkQuestion").html("");
 	$("div#answers").css("display", "none");
-	//console.log(data);
+	log(data);
 	$.ajaxSetup({
 		beforeSend : function(jqXHR, options) {
 			if (options.contentType == "application/json" && typeof options.data != "string") {
@@ -181,12 +174,12 @@ function sendNo() {
 		data : JSON.stringify(data),
 		dataType : "JSON",
 		success : function(response) {
-			//console.log(response);
+			log(response);
 			$("h1#checkTitle").html("Thank you for signing up!");
 			$("p#checkQuestion").html("We have sent an SMS with further details to your number. Please share with your friends to make their lives easier too.<br><br> Click anywhere outside this box to close it.<br>" + '<a id="facebook" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=http://goo.gl/OfOqqN" class="shareButton"></a>' + '<a id="twitter" target="_blank" href="http://twitter.com/share?url=http://goo.gl/igP5gB" class="shareButton"></a>' + '<a id="google" target="_blank" href="https://plusone.google.com/_/+1/confirm?hl=en&url=http://goo.gl/RTfYm2" class="shareButton"></a>');
 		},
 		error : function(error) {
-			//console.log(error);
+			log(error);
 			if (error.status == 500) {
 				if (error.responseText.indexOf("1062")) {
 					$("h1#checkTitle").html("Your number was already registered previously!");
@@ -199,6 +192,11 @@ function sendNo() {
 	});
 }
 
+function log(message){
+	if (debugging){
+		console.log(message);
+	}
+}
 function generateParas(text) {
 	return '<p>' + text + '</p>';
 }
@@ -260,4 +258,18 @@ function vai_a(id, v) {
 	$('html,body').animate({
 		scrollTop : $("#" + id).offset().top - 96
 	}, 600);
+}
+
+/**
+ * Used to get the query part of the URL
+ * @return {Object} result result is a JSONObject containing the different query parameters in the URL
+ */
+function get_query() {
+	var url = location.href;
+	var qs = url.substring(url.indexOf('?') + 1).split('&');
+	for (var i = 0, result = {}; i < qs.length; i++) {
+		qs[i] = qs[i].split('=');
+		result[qs[i][0]] = qs[i][1];
+	}
+	return result;
 }

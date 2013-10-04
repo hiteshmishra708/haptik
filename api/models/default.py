@@ -40,10 +40,13 @@ class User(models.Model):
     gender = models.NullBooleanField(null=True) #0 = male, 1 = female
     date_of_birth = models.DateTimeField(null=True)
     unread = models.IntegerField(default=0)
+    chat_notifications_allowed = models.BooleanField(default=True)
+    fav_notifications_allowed = models.BooleanField(default=True)
     active = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True)
     modified_at = models.DateTimeField(auto_now=True)
     device_token = models.CharField(max_length=250, null=True)
+
 
     def _get_full_number(self):
         return '+%s%s' %(self.country_code, self.number)

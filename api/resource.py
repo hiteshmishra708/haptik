@@ -1,8 +1,8 @@
 from tastypie.resources import ModelResource,  ALL, ALL_WITH_RELATIONS
 from api.models.default import Business, User, Favourite, Faqs, WebsiteSignups, CountriesSupported
 from api.models.ejabber import Messages, Collections
-from api.lib.xmpp_lib import register_user, unregister_user
-from api.lib.sms_lib import send_activation_code
+from api.lib.xmpp_lib import register_user, unregister_user 
+from api.lib.sms_lib import send_activation_code, send_confirmation_message_to_signup
 from tastypie import fields
 from tastypie.authorization import Authorization
 from random import randint
@@ -20,6 +20,7 @@ class BusinessResource(ModelResource):
             'country_code' : ALL_WITH_RELATIONS,
             'id' : ALL_WITH_RELATIONS,
         }
+
 
 class UserResource(ModelResource):
     class Meta:
@@ -74,6 +75,8 @@ class UserResource(ModelResource):
                 raise 
             try:
                 print 'regsitering user :', user.number, ' activation code: ' , activate_code
+                if activate_code == '1234':
+                    acitvate_code = 1234
                 register_user('%s' % user.number, activate_code) 
                 user.verified = True
                 user.save()
@@ -180,6 +183,16 @@ class WebsiteSignupResource(ModelResource):
         filtering = {
             'number': ALL_WITH_RELATIONS
         }
+
+    def obj_create(self, bundle, **kwargs):
+        bundle = super(WebsiteSignupResource, self).obj_create(bundle, **kwargs)
+        country_code = bundle.obj.country_code
+        country_code = country_code.strip()
+        number = bundle.obj.number
+        number = number.strip()
+        send_confirmation_message_to_signup(country_code, number)
+        return bundle
+
 
 
 class CountriesSupportedResource(ModelResource):
