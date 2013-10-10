@@ -4,6 +4,7 @@ from api.models.default import Business, Faqs, CountriesSupported, User
 from api.form import BusinessForm, FaqForm, Category, Location
 from django.shortcuts import render
 from api.lib.xmpp_lib import send_push_from_business_to_favs, register_user
+from api.lib.sms_lib import send_activation_code
 from django.views.decorators.csrf import csrf_exempt, csrf_protect
 from api import const
 
@@ -96,8 +97,6 @@ def add_business(request, business_id=0):
         'form' : form,
     })
 
-def resend_activation(request, user_id):
-    
 
 def add_faqs(request, business_id, faq_id=0):
     business = Business.objects.get(pk=business_id)

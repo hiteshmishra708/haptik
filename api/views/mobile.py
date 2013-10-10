@@ -8,6 +8,7 @@ from api import const
 from django.views.decorators.csrf import csrf_exempt
 from api.lib.xmpp_lib import send_push_notification 
 from api.lib.chats import get_unique_chats
+from api.lib.sms_lib import send_activation_code
 
 def index(request):
     return HttpResponse("Hello, world. TESTTTTT.")
@@ -104,5 +105,9 @@ def log_exotel_callback(request):
     log.save()
     return HttpResponse('Done')
 
+def resend_activation(request, user_id):
+    user = User.objects.get(id=user_id)
+    send_activation_code(str(user.country_code), str(user.number), str(user.activate_code))
+    return HttpResponse(True)
 
 

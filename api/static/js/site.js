@@ -1,10 +1,12 @@
 var whichQuote = true;
 var debugging = false;
+var abcase;
 $("document").ready(function() {//$(window).load() must be used instead of $(document).ready() because of Webkit compatibility
 	var query = get_query();
-	if (query.debug === "true"){
+	if (query.debug === "true") {
 		debugging = true;
 	}
+	abtesting();
 	$("a#submitno").click(function(e) {
 		e.preventDefault();
 		submitNo();
@@ -57,16 +59,25 @@ function getCountry() {
 	log(codehelper_ip);
 	if (codehelper_ip.Country === "IN") {
 		$("img#screenshot").attr("src", "/static/img/iphoneblack.png");
-		$("li cite").text("+91");
+		$("span#callingcode").text("+91");
 	} else if (result.countryCode === "AE") {
 		$("img#screenshot").attr("src", "/static/img/iphoneblackrow.png");
-		$("li cite").text("+971");
+		$("span#callingcode").text("+971");
 	} else if (result.countryCode === "SN") {
 		$("img#screenshot").attr("src", "/static/img/iphoneblackrow.png");
-		$("li cite").text("+65");
+		$("span#callingcode").text("+65");
 	} else if (result.countryCode === "US") {
 		$("img#screenshot").attr("src", "/static/img/iphoneblackrow.png");
-		$("li cite").text("+1");
+		$("span#callingcode").text("+1");
+	}
+}
+
+function abtesting() {
+	abcase = Math.random();
+	if (abcase <= 0.5) {
+		$("input#s-head").attr("value", "Enter your mobile number for early access");
+	} else {
+		$("input#s-head").attr("value", "Enter your mobile number for a chance to get early access");
 	}
 }
 
@@ -177,6 +188,11 @@ function sendNo() {
 			log(response);
 			$("h1#checkTitle").html("Thank you for signing up!");
 			$("p#checkQuestion").html("We have sent an SMS with further details to your number. Please share with your friends to make their lives easier too.<br><br> Click anywhere outside this box to close it.<br>" + '<a id="facebook" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=http://goo.gl/OfOqqN" class="shareButton"></a>' + '<a id="twitter" target="_blank" href="http://twitter.com/share?url=http://goo.gl/igP5gB" class="shareButton"></a>' + '<a id="google" target="_blank" href="https://plusone.google.com/_/+1/confirm?hl=en&url=http://goo.gl/RTfYm2" class="shareButton"></a>');
+			if (abcase <= 0.5) {
+				_gaq.push(['_trackEvent', 'signup', 'new', 'short']);
+			} else {
+				_gaq.push(['_trackEvent', 'signup', 'new', 'long']);
+			}
 		},
 		error : function(error) {
 			log(error);
@@ -184,19 +200,37 @@ function sendNo() {
 				if (error.responseText.indexOf("1062")) {
 					$("h1#checkTitle").html("Your number was already registered previously!");
 					$("p#checkQuestion").html("To download the app again, visit haptik.co/download on your mobile device. And please do share it with your friends to make their lives easier.<br><br> Click anywhere outside this box to close it.<br>" + '<a id="facebook" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=http://goo.gl/OfOqqN" class="shareButton"></a>' + '<a id="twitter" target="_blank" href="http://twitter.com/share?text=Hate calling companies? Sign up here so you can text them. @hellohaptik&url=http://goo.gl/igP5gB" class="shareButton"></a>' + '<a id="google" target="_blank" href="https://plusone.google.com/_/+1/confirm?hl=en&url=http://goo.gl/RTfYm2" class="shareButton"></a>');
-
-				} else
+					if (abcase <= 0.5) {
+						_gaq.push(['_trackEvent', 'signup', 'old', 'short']);
+					} else {
+						_gaq.push(['_trackEvent', 'signup', 'old', 'long']);
+					}
+				} else {
 					checkIfHuman("Oops, we encountered an error on our end. Please try once more");
+					if (abcase <= 0.5) {
+						_gaq.push(['_trackEvent', 'signup', 'error', '500']);
+					} else {
+						_gaq.push(['_trackEvent', 'signup', 'error', '500']);
+					}
+				}
+			} else {
+				checkIfHuman("Oops, we encountered an error on our end. Please try once more");
+				if (abcase <= 0.5) {
+					_gaq.push(['_trackEvent', 'signup', 'error', error.responseText]);
+				} else {
+					_gaq.push(['_trackEvent', 'signup', 'error', error.responseText]);
+				}
 			}
 		}
 	});
 }
 
-function log(message){
-	if (debugging){
+function log(message) {
+	if (debugging) {
 		console.log(message);
 	}
 }
+
 function generateParas(text) {
 	return '<p>' + text + '</p>';
 }

@@ -45,7 +45,7 @@ ul, li {
 	padding: 0;
 	list-style: none;
 }
-footer.footertxt ul li.apple a, footer.footertxt ul li.android, footer.footertxt ul li.window, aside.hotin-lt h4 a, ul.what li, ul.one li, aside.forbusinessin-lt h2 a, header.header h1 a, ul.enter li cite, ul.enter li code, ul.enter li abbr a {
+footer.footertxt ul li.apple a, footer.footertxt ul li.android, footer.footertxt ul li.window, aside.hotin-lt h4 a, ul.what li, ul.one li, aside.forbusinessin-lt h2 a, header.header h1 a {
 	background: url('../img/common.png') 0 0 no-repeat;
 }
 aside.aboutus-ct {
@@ -163,38 +163,43 @@ article.hatein h2 span {
 	font-weight: 700;
 }
 ul.enter {
-	width: 673px;
 	height: 320px;
 	float: left;
-	padding: 55px 0 0 145px;
+	padding: 55px 0 0 88px;
 	z-index: 9999;
 	position: relative;
 }
 ul.enter li {
-	width: 673px;
+	width: 771px;
 	height: 65px;
 	float: left;
+	background: #fff;
+	border-radius: 10px;
+	padding: 0px 10px;
+	font-family: 'Rambla', sans-serif;
+	font-size: 25px;
 }
 ul.enter li cite {
-	width: 93px;
+	width: 70px;
 	height: 45px;
 	float: left;
-	padding: 20px 0 0 12px;
+	padding: 20px 0 0 2px;
 	color: #02364b;
 	font-family: 'Rambla', sans-serif;
 	font-size: 30px;
 	font-weight: 700;
-	background-position: 0 -484px;
 	font-style: normal;
+	background-image: url("/static/img/citeback.png");
+	background-repeat: no-repeat;
+	background-position: 6px 2px;
 }
 ul.enter li code {
-	width: 473px;
-	height: 65px;
+	height: 75px;
 	float: left;
-	background-position: -105px -484px;
+	margin-left:5px;
 }
 ul.enter li code input {
-	width: 473px;
+	width: 593px;
 	height: 65px;
 	background: none;
 	font-family: 'Rambla', sans-serif;
@@ -203,12 +208,24 @@ ul.enter li code input {
 	color: #686767;
 	border: 0;
 }
+ul.enter li abbr {
+	position: absolute;
+	right: 5px;
+}
 ul.enter li abbr a {
-	width: 95px;
-	height: 65px;
+	width: 75px;
 	float: left;
-	background-position: -578px -484px;
-	text-indent: -99999px;
+	background: #209acc;
+	color: #fff;
+	text-decoration: none;
+	margin: 2.5px 0px 0px 10px;
+	border-radius: 10px;
+	font-size: 30px;
+	padding: 11.5px 0px;
+	text-align: center;
+	border-width: 3px;
+	border-style: solid;
+	border-color: #0F678B;
 }
 aside.mobile-lt {
 	width: 408px;
@@ -772,6 +789,7 @@ ul.enter li li.callingCode {
 	float: none;
 	cursor: pointer;
 	-webkit-box-shadow: 0px 1px 2px rgba(0,0,0,0.5);
+	border-radius: 0;
 }
 .ellipsis {
 	white-space: nowrap;
