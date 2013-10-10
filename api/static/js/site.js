@@ -199,7 +199,7 @@ function sendNo() {
 			if (error.status == 500) {
 				if (error.responseText.indexOf("1062")) {
 					$("h1#checkTitle").html("Your number was already registered previously!");
-					$("p#checkQuestion").html("To download the app again, visit haptik.co/download on your mobile device. And please do share it with your friends to make their lives easier.<br><br> Click anywhere outside this box to close it.<br>" + '<a id="facebook" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=http://goo.gl/OfOqqN" class="shareButton"></a>' + '<a id="twitter" target="_blank" href="http://twitter.com/share?text=Hate calling companies? Sign up here so you can text them. @hellohaptik&url=http://goo.gl/igP5gB" class="shareButton"></a>' + '<a id="google" target="_blank" href="https://plusone.google.com/_/+1/confirm?hl=en&url=http://goo.gl/RTfYm2" class="shareButton"></a>');
+					$("p#checkQuestion").html("We will be sending you a text with a download link once we open up more beta slots. Until then, please do share Haptik with your friends to make their lives easier!<br><br> Click anywhere outside this box to close it.<br>" + '<a id="facebook" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=http://goo.gl/OfOqqN" class="shareButton"></a>' + '<a id="twitter" target="_blank" href="http://twitter.com/share?text=Hate calling companies? Sign up here so you can text them. @hellohaptik&url=http://goo.gl/igP5gB" class="shareButton"></a>' + '<a id="google" target="_blank" href="https://plusone.google.com/_/+1/confirm?hl=en&url=http://goo.gl/RTfYm2" class="shareButton"></a>');
 					if (abcase <= 0.5) {
 						_gaq.push(['_trackEvent', 'signup', 'old', 'short']);
 					} else {
