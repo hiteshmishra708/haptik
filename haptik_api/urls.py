@@ -5,8 +5,8 @@ from tastypie.api import Api
 v1_api = Api(api_name="v1")
 v1_api.register(BusinessResource())
 v1_api.register(UserResource())
-v1_api.register(MessageResource())
-v1_api.register(CollectionResource())
+#v1_api.register(MessageResource())
+#v1_api.register(CollectionResource())
 v1_api.register(FavouriteResource())
 v1_api.register(FaqsResource())
 v1_api.register(WebsiteSignupResource())
@@ -23,6 +23,8 @@ urlpatterns = patterns('',
 
     # Routing urls for HAPTIK API
     url(r'^api/', include(v1_api.urls)),
+    url(r'^beta_distrib/', 'api.views.mobile.beta_distrib'),
+    url(r'^plist_distrib/', 'api.views.mobile.haptik_plist'),
     url(r'^get_chats/', 'api.views.mobile.get_chat_history'),
     url(r'^post_message/', 'api.views.mobile.post_message'),
     url(r'^get_businesses/', 'api.views.mobile.get_businesses'),

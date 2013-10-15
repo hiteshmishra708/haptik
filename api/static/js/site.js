@@ -1,6 +1,7 @@
 var whichQuote = true;
 var debugging = false;
 var abcase;
+var inputText;
 $("document").ready(function() {//$(window).load() must be used instead of $(document).ready() because of Webkit compatibility
 	var query = get_query();
 	if (query.debug === "true") {
@@ -17,8 +18,15 @@ $("document").ready(function() {//$(window).load() must be used instead of $(doc
 	});
 
 	$("input#s-head").focusin(function() {
-		$(this).attr("value", "");
+		var currentValue = $(this).attr("value");
+		if (currentValue === inputText)
+			$(this).attr("value", "");
 	});
+	$("input#s-head").focusout(function() {
+		var currentValue = parseInt($(this).attr("value").trim());
+		if (currentValue === "")
+			$(this).attr("value", inputText);
+	})
 	$("cite").hover(function(e) {
 		$("li.callingCode").css("display", "block");
 		//$("h6.facebooklike").css("display", "none");
@@ -74,11 +82,13 @@ function getCountry() {
 
 function abtesting() {
 	abcase = Math.random();
+	abcase = 1; //testing over for now
 	if (abcase <= 0.5) {
-		$("input#s-head").attr("value", "Enter your mobile number for early access");
+		inputText = "Enter your mobile number for early access";
 	} else {
-		$("input#s-head").attr("value", "Enter your mobile number for a chance to get early access");
+		inputText = "Enter your mobile number for a chance to get early access";
 	}
+	$("input#s-head").attr("value", inputText);
 }
 
 function checkIfHuman(title) {

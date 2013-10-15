@@ -5,6 +5,7 @@ from api.lib.xmpp_lib import register_user, unregister_user
 from api.lib.sms_lib import send_activation_code, send_confirmation_message_to_signup
 from tastypie import fields
 from tastypie.authorization import Authorization
+from tastypie.authentication import BasicAuthentication
 from random import randint
 import urllib
 from django.utils.encoding import *
@@ -33,6 +34,7 @@ class UserResource(ModelResource):
         }
 
     def obj_create(self, bundle, **kwargs):
+        print 'in create : ', bundle.request.META
         random_number = randint(1000, 9999)
         try:
             # If user exists unregister on XMPP server and  update the activation code
@@ -201,5 +203,14 @@ class CountriesSupportedResource(ModelResource):
         queryset = CountriesSupported.objects.filter(active=1)
         resource_name = "countries_supported"
         authorization = Authorization()
+        #authentication = BasicAuthentication()
         ordering = ["country"]
         always_return_data = True
+
+    def dehydrate(self, bundle):
+        # Include the request IP in the bundle.
+        print 'in DEHYDRATE: '
+        print bundle.request.META
+
+        bundle.data['request_ip'] = bundle.request.META.get('REMOTE_ADDR')
+        return bundle

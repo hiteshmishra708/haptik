@@ -9,6 +9,17 @@ from django.views.decorators.csrf import csrf_exempt
 from api.lib.xmpp_lib import send_push_notification 
 from api.lib.chats import get_unique_chats
 from api.lib.sms_lib import send_activation_code
+import plistlib
+
+def beta_distrib(request):
+    t = loader.get_template('distrib.html')
+    c = Context({})
+    response = HttpResponse(t.render(c))
+    return response
+   
+def haptik_plist(request):
+    plist = plistlib.readPlist('/home/ubuntu/haptik_api/api/static/distrib/Haptik.plist')
+    return HttpResponse(plist, mimetype='text/xml') 
 
 def index(request):
     return HttpResponse("Hello, world. TESTTTTT.")
@@ -54,6 +65,7 @@ def chats(request, user_name):
 
 
 def get_chat_history(request):
+    print 'REQUEST: ', request
     user = request.GET.get('user')
     business = request.GET.get('business')
     #user = user.split('@')[0]

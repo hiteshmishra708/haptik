@@ -10,6 +10,9 @@ body {
 	font-family: 'Rambla', sans-serif;
 	overflow-x: hidden;
 }
+#topcontrol {
+	z-index: 9999;
+}
 img {
 	border: none;
 	margin: 0;
@@ -184,7 +187,6 @@ ul.enter li cite {
 	height: 45px;
 	float: left;
 	padding: 20px 0 0 2px;
-	color: #02364b;
 	font-family: 'Rambla', sans-serif;
 	font-size: 30px;
 	font-weight: 700;
@@ -193,10 +195,13 @@ ul.enter li cite {
 	background-repeat: no-repeat;
 	background-position: 6px 2px;
 }
+ul.enter li cite, li.callingCode {
+	color: #02364b;
+}
 ul.enter li code {
 	height: 75px;
 	float: left;
-	margin-left:5px;
+	margin-left: 5px;
 }
 ul.enter li code input {
 	width: 593px;
@@ -252,7 +257,7 @@ aside.mobile-rt p {
 	font-size: 16px;
 	font-weight: 400;
 	line-height: 20px;
-	padding: 60px 0 20px;
+	padding: 10px 0 20px;
 	text-align: justify;
 }
 aside.mobile-rt h2 {
@@ -790,6 +795,14 @@ ul.enter li li.callingCode {
 	cursor: pointer;
 	-webkit-box-shadow: 0px 1px 2px rgba(0,0,0,0.5);
 	border-radius: 0;
+	background-image: url("/static/img/separator.png");
+	background-position: bottom;
+	background-repeat: no-repeat;
+	background-size: 200px 1px;
+}
+span.callingcode {
+	float: right;
+	color: #209acc;
 }
 .ellipsis {
 	white-space: nowrap;

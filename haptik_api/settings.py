@@ -4,7 +4,7 @@ import os
 SITE_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 DEBUG = True
-#TASTYPIE_FULL_DEBUG = True
+TASTYPIE_FULL_DEBUG = True
 TEMPLATE_DEBUG = DEBUG
 
 ADMINS = (
@@ -34,7 +34,7 @@ DATABASES = {
     }
 }
 
-#DATABASE_ROUTERS = ['api.models.db_router.DBRouter']
+DATABASE_ROUTERS = ['api.models.db_router.DBRouter']
 
 # Hosts/domain names that are valid for this site; required if DEBUG is False
 # See https://docs.djangoproject.com/en/1.5/ref/settings/#allowed-hosts
