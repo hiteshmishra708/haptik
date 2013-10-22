@@ -40,4 +40,7 @@ urlpatterns = patterns('',
     url(r'^ajax_send_message/(?P<business_id>\d+)/$', 'api.views.web.ajax_send_message'),
     url(r'^log_exotel_callback/', 'api.views.mobile.log_exotel_callback'),
     url(r'^admin/', include(admin.site.urls)),
+    url(r'^distribute/(?P<hex_code>\w+)/$', 'api.views.mobile.distribute'),
+    url(r'^create_distrib_url/', 'api.views.web.create_distrib_url'),
+    url(r'^ajax_create_url/', 'api.views.web.ajax_create_url'),
 )
