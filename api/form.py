@@ -40,7 +40,7 @@ class BusinessForm(forms.ModelForm):
         twitter = forms.CharField(widget = BootstrapTextInput(prepend='www.twitter.com/'))
         facebook = forms.CharField(widget = BootstrapTextInput(prepend='www.facebook.com/'))
         model = Business
-        fields = ('id', 'name', 'xmpp_handle', 'email', 'location', 'website', 'facebook', 'twitter', 'category', 'phone_number')
+        fields = ('id', 'name', 'xmpp_handle', 'email', 'location', 'website', 'facebook', 'twitter', 'category', 'phone_number', 'active')
 
 class BusinessModelChoice(forms.ModelChoiceField):
     def label_from_instance(self, obj):

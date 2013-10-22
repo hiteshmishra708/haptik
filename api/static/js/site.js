@@ -29,18 +29,18 @@ $("document").ready(function() {//$(window).load() must be used instead of $(doc
 	})
 	$("cite").hover(function(e) {
 		$("li.callingCode").css("display", "block");
-		//$("h6.facebooklike").css("display", "none");
+		$("h6.facebooklike").css("display", "none");
 	}, function(e) {
 		$("li.callingCode").css("display", "none");
-		//$("h6.facebooklike").css("display", "block");
+		$("h6.facebooklike").css("display", "block");
 
 	});
 	$("ul#chooseCallingCode").hover(function(e) {
 		$("li.callingCode").css("display", "block");
-		//$("h6.facebooklike").css("display", "none");
+		$("h6.facebooklike").css("display", "none");
 	}, function(e) {
 		$("li.callingCode").css("display", "none");
-		//$("h6.facebooklike").css("display", "block");
+		$("h6.facebooklike").css("display", "block");
 
 	});
 	$("article.hatein").hover(function(e) {

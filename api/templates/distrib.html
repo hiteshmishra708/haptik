@@ -1,12 +1,12 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta http-equiv="Content-Type" content="text/xml; charset=iso-8859-1">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" /> 
   <title>Install Haptik</title>
   <style type="text/css">
     body {
-      background: url(bkg.png) repeat #c5ccd4;
+      background: url(bkg.png) repeat #209acc;
       font-family: Helvetica, arial, sans-serif;
     }
     .congrats {
@@ -34,19 +34,45 @@
 </head>
 <body>
 
-<div class="congrats">Congrats! You've been invited to beta test Haptik.</div>
+{% if hex_used %}
+        <div class="congrats"> Sorry it seems like you have already used this link. Please email <a href="mailto:aakrit@haptik.co">Haptik</a> to request for a new download link.</div>
+{% else %}
+    {% if supported %}
+        <div class="congrats">Congrats! You've been invited to beta test Haptik on
+        {% if is_ios %}
+            iOS
+        {% else %}
+            android
+        {% endif %}
+        .</div>
 
-<div class="step">
-  <table><tr>
-    <td class="instructions">Install the<br />Haptik app</td>
-    <td width="24" class="arrow">&rarr;</td>
-    <td width="57" class="imagelink">
-      <a href="itms-services://?action=download-manifest&url=http://haptik.co:8000/plist_distrib/">
-        <img src="/static/img/haptikSmall.png" height="57" width="57" />
-      </a>
-    </td>
-  </tr></table>
-</div>
+        <div class="step">
+        <table>
+            <tr>
+                <td class="instructions">Install the<br /><b>Haptik app</b></td>
+                <td width="24" class="arrow">&rarr;</td>
+                <td width="57" class="imagelink">
+                {% if is_ios %}
+                    <a href="itms-services://?action=download-manifest&url=http://haptik.co/static/distrib/Haptik.plist">
+                        <img src="/static/img/haptikSmall.png" height="57" width="57" />
+                    </a>
+                {% else %}
+                    <a href="/static/distrib/haptik_android.apk">
+                        <img src="/static/img/haptikSmall.png" height="57" width="57" />
+                    </a>
+                {% endif %}
+                </td>
+            </tr>
+        </table>
+        </div>
+        {% if is_android %}
+            <div class="congrats">NOTE: make sure you have unknown sources enabled. <br/>
+            Once downlaoded please click on the downloaded apk to being the install</div>
+        {% endif %}
+    {% else %}
+        <div class="congrats">Sorry we dont support this platform.</div>
+    {% endif %}
+{% endif %}
 
 </body>
 </html>

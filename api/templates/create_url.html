@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/xml; charset=iso-8859-1">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" /> 
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <title>Install Haptik</title>
+  <style type="text/css">
+    body {
+      background: url(bkg.png) repeat #209acc;
+      font-family: Helvetica, arial, sans-serif;
+    }
+    .congrats {
+      font-size: 16pt;
+      padding: 6px;
+      text-align: center;
+    }
+    .step {
+      background: white;
+      border: 1px #ccc solid;
+      border-radius: 14px;
+      padding: 4px 10px;
+      margin: 10px 0;
+    }
+    .instructions {
+      font-size: 10pt;
+    }
+    .arrow {
+      font-size: 15pt;
+    }
+    .generated_url{
+        width: 75%;
+        padding-right: 20px;
+        padding-left: 20px;
+        font-size: medium;
+    }
+    table {
+      width: 100%;
+    }
+  </style>
+</head>
+<body>
+
+        <div class="congrats"> 
+            NUMBER: <input type="text" id="number"><br>
+            <button type=button class="btn btn-primary" id="generate_url">generate url</button><br>
+            URL: <br><span class="generated_url"></span>
+        </div>
+        <script src="/static/js/distrib.js" type="text/javascript" charset="utf-8"></script>
+</body>
+</html>
+

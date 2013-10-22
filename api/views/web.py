@@ -7,6 +7,8 @@ from api.lib.xmpp_lib import send_push_from_business_to_favs, register_user
 from api.lib.sms_lib import send_activation_code
 from django.views.decorators.csrf import csrf_exempt, csrf_protect
 from api import const
+from api.lib.beta_distrib import create_beta_distrib_url
+import json
 
 
 def index(request):
@@ -14,7 +16,27 @@ def index(request):
     c = Context({})
     response = HttpResponse(t.render(c))
     return response
+   
+def create_distrib_url(request):
+    t = loader.get_template('create_url.html')
+    c = Context({})
+    response = HttpResponse(t.render(c))
+    return response
+
+
+def ajax_create_url(request):
+    if request.method == 'GET':
+        number = request.GET.get('number');
+        url = create_beta_distrib_url(number)
+        resp = {'url' : url}
+        return HttpResponse(json.dumps(resp), mimetype="application/json" )
+    else:
+        print 'NOT GET'
+    return HttpResponse(False)
+
     
+    
+
 
 def business_admin(request):
     all_businesses = Business.objects.filter(active=1).all()

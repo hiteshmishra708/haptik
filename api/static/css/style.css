@@ -158,6 +158,7 @@ article.hatein h6 {
 	left: 450px;
 	margin-left: -215px;
 	width: 450px;
+	z-index:9999;
 }
 article.hatein h2 span {
 	color: #fff;
