@@ -17,14 +17,14 @@ admin.autodiscover()
 
 urlpatterns = patterns('',
     # Examples:
-    (r'^static/(?P<path>.*)$', 'django.views.static.serve',
-            {'document_root': '/home/ubuntu/haptik_api/api/static'}),
     url(r'^$', 'api.views.web.index', name='index'),
 
     # Routing urls for HAPTIK API
     url(r'^api/', include(v1_api.urls)),
-    url(r'^beta_distrib/', 'api.views.mobile.beta_distrib'),
-    url(r'^plist_distrib/', 'api.views.mobile.haptik_plist'),
+    url(r'^login/$', 'api.views.web.user_login'),
+    url(r'^logout/$', 'api.views.web.user_logout'),
+    #url(r'^beta_distrib/', 'api.views.mobile.beta_distrib'),
+    #url(r'^plist_distrib/', 'api.views.mobile.haptik_plist'),
     url(r'^get_chats/', 'api.views.mobile.get_chat_history'),
     url(r'^post_message/', 'api.views.mobile.post_message'),
     url(r'^get_businesses/', 'api.views.mobile.get_businesses'),

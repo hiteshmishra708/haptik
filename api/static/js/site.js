@@ -82,7 +82,8 @@ function getCountry() {
 
 function abtesting() {
 	abcase = Math.random();
-	abcase = 1; //testing over for now
+	abcase = 1;
+	//testing over for now
 	if (abcase <= 0.5) {
 		inputText = "Enter your mobile number for early access";
 	} else {
@@ -246,7 +247,7 @@ function generateParas(text) {
 }
 
 function generateAlsoRead(postEntry) {
-	return '<li><a target="_blank" href="' + postEntry.url + '">' + postEntry['regular-title'] + '</a></li>';
+	return '<li><a target="_blank" href="' + postEntry["url-with-slug"] + '">' + postEntry['regular-title'] + '</a></li>';
 }
 
 function quoteTimer() {
@@ -268,13 +269,19 @@ function quoteTimer() {
 
 function setBlog(data) {
 	var ulHTML = "";
-	$("h2#blogTitle").html(data.posts[0]['regular-title']);
-	var postHTML = data.posts[0]['regular-body'];
-	$("div#postImage").css("background-image", 'url(' + $(postHTML).find('img:first').attr("src") + ')');
-	$("p#slug").text($(postHTML).text());
-	$("a#fullStory").attr("href", data.posts[0].url);
-	$("a#fullStory").attr("href", data.posts[0].url);
-	$(".ellipsis").ellipsis();
+	if (data.posts[0].type === "regular") {
+		$("h2#blogTitle").html(data.posts[0]['regular-title']);
+		var postHTML = data.posts[0]['regular-body'];
+		$("div#postImage").css("background-image", 'url(' + $(postHTML).find('img:first').attr("src") + ')');
+		$("p#slug").text($(postHTML).text());
+		$("a#fullStory").attr("href", data.posts[0]["url-with-slug"]);
+		$(".ellipsis").ellipsis();
+	}
+	else if (data.posts[0].type === "video"){
+		$("p#slug").html(data.posts[0]['video-caption']);
+		$("div#postImage").html(data.posts[0]["video-source"]);
+		$("a#fullStory").attr("href", data.posts[0]["url-with-slug"]);
+	}
 	if (data.posts.length == 1) {
 		$("#morePosts").css("display", "none");
 	}

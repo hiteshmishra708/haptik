@@ -35,16 +35,16 @@
 <body>
 
 {% if hex_used %}
-        <div class="congrats"> Sorry it seems like you have already used this link. Please email <a href="mailto:aakrit@haptik.co">Haptik</a> to request for a new download link.</div>
+        <div class="congrats">Sorry, looks like you have already used this link. Please email <a href="mailto:aakrit@haptik.co">us</a> to request for a new download link. Thanks.</div>
 {% else %}
     {% if supported %}
         <div class="congrats">Congrats! You've been invited to beta test Haptik on
         {% if is_ios %}
-            iOS
+            iOS.
         {% else %}
-            android
+            android.
         {% endif %}
-        .</div>
+        </div>
 
         <div class="step">
         <table>
@@ -66,8 +66,8 @@
         </table>
         </div>
         {% if is_android %}
-            <div class="congrats">NOTE: make sure you have unknown sources enabled. <br/>
-            Once downlaoded please click on the downloaded apk to being the install</div>
+            <div class="congrats">NOTE: You will need to have the setting "Allow installation of apps from unknown sources" enabled.<br/>
+            Once downloaded, please click on the .APK file to begin installattion.</div>
         {% endif %}
     {% else %}
         <div class="congrats">Sorry we dont support this platform.</div>
