@@ -25,3 +25,5 @@ OS_TYPE_ANDROID = 2
 kXMPP_SERVER_DOMAIN = 'zingcredits.com'
 
 kSTARTING_FAV_WORD= 'Info:'
+
+kEMAILS_FOR_BUSINESS_MESG = ['swapan@haptik.co','aakrit@haptik.co']

@@ -103,14 +103,15 @@ class FavouriteResource(ModelResource):
     business = fields.ForeignKey(BusinessResource, 'business', full=True)
 
     class Meta:
-        queryset = Favourite.objects.filter(active=1)
+        queryset = Favourite.objects.all()
         authorization = Authorization()
         resource_name = "favourite"
         allowed = ['get', 'put', 'patch', 'post']
         ordering = ["id"]
         always_return_data = True
         filtering = {
-            'user' : ALL_WITH_RELATIONS
+            'user' : ALL_WITH_RELATIONS,
+            'active' : ALL_WITH_RELATIONS
         }
     
 #FOR SOEM ODD REASON THIS PUT IS NOT WORKING. SO I HAD TO OVERRIDE IT
@@ -119,6 +120,27 @@ class FavouriteResource(ModelResource):
         bundle.obj = Favourite.objects.get(id=faq_id)
         bundle.obj.active = bundle.data.get('active')
         bundle.obj.save()
+        return bundle
+
+    def obj_create(self, bundle, **kwargs):
+        print 'in favorite create : ', bundle
+        try:
+            business = bundle.data['business']
+            user = bundle.data['user']
+            user = user.replace('/api/v1/user', '')
+            user = user.replace('/', '')
+            business = business.replace('/api/v1/business' , '')
+            business = business.replace('/', '')
+            fav_obj = Favourite.objects.filter(business_id = business, user_id = user)
+            if len(fav_obj) > 0:
+                bundle.obj = fav_obj[0]
+                bundle.obj.active = 1
+                bundle.obj.save()
+                return bundle
+        except Exception, e:
+            print 'IN FAVORITE OBJECT CREATE EXPCETION: ', e
+        # if user dosent exist or there is an error create a new one
+        bundle = super(FavouriteResource, self).obj_create(bundle, **kwargs)
         return bundle
 
 

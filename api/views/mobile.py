@@ -1,6 +1,7 @@
 from django.http import HttpResponse
 from django.template import Context, loader
 from django.core import serializers
+from django.core.mail import send_mail
 import json
 from api.models.default import *
 from api.models.ejabber import Messages, Collections
@@ -109,19 +110,28 @@ def get_chat_history(request):
 
 @csrf_exempt
 def post_message(request):
-    print 'request : ' , request
-    print 'just got posted'
-    to = request.POST.get('to')
-    print 'TO : ', to
-    body = request.POST.get('body')
-    print 'BODY : ', body
-    from_user = request.POST.get('from')
-    business = Business.objects.get(xmpp_handle = '%s@zingcredits.com' % from_user)
-    print 'from : ', business
-    to_user = User.objects.filter(number=to)[0]
-    print 'FULL USER : ', to_user
-    full_body = '%s: %s' % (business.name, body)
-    send_push_notification(to_user, full_body)
+    try: 
+        print 'request : ' , request
+        print 'just got posted'
+        to = request.POST.get('to')
+        print 'TO : ', to
+        body = request.POST.get('body')
+        print 'BODY : ', body
+        from_user = request.POST.get('from')
+        if to and not to.isdigit():
+            business = Business.objects.get(xmpp_handle = '%s@zingcredits.com' % to)
+            subject= 'Message sent to %s'  % (business.name)
+            message = '%s sent the following message to %s: %s' % (from_user, business.name, body)
+            send_mail(subject, message, 'swapan@haptik.co', const.kEMAILS_FOR_BUSINESS_MESG)
+        else:
+            business = Business.objects.get(xmpp_handle = '%s@zingcredits.com' % from_user)
+            print 'from : ', business
+            to_user = User.objects.filter(number=to)[0]
+            print 'FULL USER : ', to_user
+            full_body = '%s: %s' % (business.name, body)
+            send_push_notification(to_user, full_body)
+    except Exception, e:
+        print ' in post expcetion: ', e
     return HttpResponse('Done')
     
 

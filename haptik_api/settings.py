@@ -232,3 +232,8 @@ PIPELINE_JS = {
     },
 }
 
+EMAIL_HOST = 'smtp.webfaction.com'
+EMAIL_HOST_USER = 'haptik'
+EMAIL_HOST_PASSWORD = 'Batman1305'
+DEFAULT_FROM_EMAIL = 'swapan@haptik.co'
+SERVER_EMAIL = 'swapan@haptik.co'

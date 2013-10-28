@@ -40,7 +40,7 @@ def ajax_create_url(request):
 
 @login_required
 def business_admin(request):
-    all_businesses = Business.objects.filter(active=1).all()
+    all_businesses = Business.objects.all()
     t = loader.get_template('all_business.html')
     c = Context({'businesses' : all_businesses})
     response = HttpResponse(t.render(c))
