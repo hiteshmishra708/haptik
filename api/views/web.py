@@ -18,6 +18,26 @@ def index(request):
     c = Context({})
     response = HttpResponse(t.render(c))
     return response
+
+
+def company_pages(request):
+    t = loader.get_template('vodafoneindia.html')
+    c = Context({})
+    response = HttpResponse(t.render(c))
+    return response
+
+def company_flipkatk(request):
+    t = loader.get_template('flipkart.html')
+    c = Context({})
+    response = HttpResponse(t.render(c))
+    return response
+
+def company_pvr(request):
+    t = loader.get_template('pvrcinemas.html')
+    c = Context({})
+    response = HttpResponse(t.render(c))
+    return response
+
    
 @login_required
 def create_distrib_url(request):

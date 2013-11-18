@@ -4,7 +4,7 @@ import os
 SITE_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 BASE_PATH = os.path.dirname(__file__)
 
-DEBUG = True
+DEBUG = False
 TASTYPIE_FULL_DEBUG = False
 TEMPLATE_DEBUG = DEBUG
 
@@ -87,6 +87,7 @@ STATIC_URL = '/static/'
 
 # Additional locations of static files
 STATICFILES_DIRS = (
+    os.path.join(SITE_ROOT, 'api', 'static_files') ,
     # Put strings here, like "/home/html/static" or "C:/www/django/static".
     # Always use forward slashes, even on Windows.
     # Don't forget to use absolute paths, not relative paths.
@@ -146,6 +147,7 @@ INSTALLED_APPS = (
     'pipeline',
     'twitter_bootstrap',
     'bootstrap_toolkit',
+    'django.contrib.sitemaps',
     # Uncomment the next line to enable the admin:
      'django.contrib.admin',
      'django_mobile_app_distribution',

@@ -190,9 +190,12 @@ class FaqsResource(ModelResource):
         queryset = Faqs.objects.all()
         resource_name = "faqs"
         excludes = ['answer']
+        limit = 1000
         authorization = Authorization()
         always_return_data = True
         filtering = {
+            'active' : ALL_WITH_RELATIONS,
+            'modified_at' : ['gte' , 'lte'],
             'business' : ALL_WITH_RELATIONS
         }
 

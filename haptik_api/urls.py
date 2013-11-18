@@ -1,6 +1,7 @@
 from django.conf.urls import patterns, include, url
 from api.resource import BusinessResource, MessageResource, CollectionResource, UserResource, FavouriteResource, FaqsResource, WebsiteSignupResource, CountriesSupportedResource
 from tastypie.api import Api
+from django.views.generic import TemplateView
 
 v1_api = Api(api_name="v1")
 v1_api.register(BusinessResource())
@@ -43,4 +44,10 @@ urlpatterns = patterns('',
     url(r'^distribute/(?P<hex_code>\w+)/$', 'api.views.mobile.distribute'),
     url(r'^create_distrib_url/', 'api.views.web.create_distrib_url'),
     url(r'^ajax_create_url/', 'api.views.web.ajax_create_url'),
+    url(r'^india/vodafone/', 'api.views.web.company_pages'),
+    url(r'^india/flipkart/', 'api.views.web.company_flipkatk'),
+    url(r'^india/pvr-cinemas/', 'api.views.web.company_pvr'),
+
+    #url(r'^robots\.txt$', TemplateView.as_view(template_name="robots.txt", content_type='text/plain')),
+    #url(r'^sitemap\.xml', TemplateView.as_view(template_name="sitemap.xml", content_type='application/xml')),
 )

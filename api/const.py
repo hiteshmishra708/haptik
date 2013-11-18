@@ -26,4 +26,4 @@ kXMPP_SERVER_DOMAIN = 'zingcredits.com'
 
 kSTARTING_FAV_WORD= 'Info:'
 
-kEMAILS_FOR_BUSINESS_MESG = ['swapan@haptik.co','aakrit@haptik.co']
+kEMAILS_FOR_BUSINESS_MESG = ['swapan@haptik.co','aakrit@haptik.co', 'hat@haptik.co']

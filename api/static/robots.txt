@@ -1,0 +1,2 @@
+User-agent:  *
+Disallow: /haptik.co/india/vodafone/sitemap.xml
