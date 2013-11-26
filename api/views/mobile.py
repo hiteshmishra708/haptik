@@ -22,17 +22,19 @@ def distribute(request, hex_code):
     supported = True
     hex_used = False
     dis = find_distrib_by_hex(hex_code)
-    if not dis or not dis.active:
-        hex_used =True 
+    #if not dis or not dis.active:
+    #    hex_used =True 
     if 'iPhone' in user_agent:
         is_ios = True
-        dis.active = False
+        #dis.active = False
     elif 'Android' in user_agent:
         is_android = True
-        dis.active = False
+        #dis.active = False
     else:
         supported = False
-    dis.save()
+    if dis:
+        dis.active = False
+        dis.save()
     c = Context({'is_android' : is_android, 'is_ios' : is_ios, 'supported' : supported, 'hex_used' : hex_used})
     response = HttpResponse(t.render(c))
     return response

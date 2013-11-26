@@ -19,6 +19,23 @@ def index(request):
     response = HttpResponse(t.render(c))
     return response
 
+def terms(request):
+    t = loader.get_template('terms.html')
+    c = Context({})
+    response = HttpResponse(t.render(c))
+    return response
+
+def privacy(request):
+    t = loader.get_template('privacy.html')
+    c = Context({})
+    response = HttpResponse(t.render(c))
+    return response
+
+def why_phone(request):
+    t = loader.get_template('why_phone.html')
+    c = Context({})
+    response = HttpResponse(t.render(c))
+    return response
 
 def company_pages(request):
     t = loader.get_template('vodafoneindia.html')
