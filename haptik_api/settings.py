@@ -35,7 +35,7 @@ DATABASES = {
     }
 }
 
-DATABASE_ROUTERS = ['api.models.db_router.DBRouter']
+#DATABASE_ROUTERS = ['api.models.db_router.DBRouter']
 
 LOGIN_URL = '/login/'
 
@@ -189,6 +189,8 @@ PYAPNS_CONFIG = {
     'TIMEOUT': 15,
     'INITIAL': [
         ('Haptik', '/home/ubuntu/haptikEnterprisePush.pem', 'production'),
+        ('DeviceHelpDev', '/home/ubuntu/PushCerts/DeviceHelpDev.pem', 'sandbox'),
+        ('DeviceHelpProd', '/home/ubuntu/PushCerts/DeviceHelpProd.pem', 'production'),
     ]
 }
 PIPELINE_YUI_BINARY = '/usr/bin/yui-compressor'

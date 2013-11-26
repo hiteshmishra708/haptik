@@ -16,6 +16,12 @@ class Business(models.Model):
     active = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True)
     modified_at = models.DateTimeField(auto_now=True)
+    haptik_flag= models.BooleanField(default=True)
+    devicehelp_flag= models.BooleanField(default=False)
+    devicehelp_active= models.BooleanField(default=False)
+    ios_recommended = models.BooleanField(default=False)
+    android_recommended = models.BooleanField(default=False)
+    preview_text = models.CharField(max_length=250, null=True)
 
     def __unicode__(self):
         return unicode_class(self)
@@ -46,6 +52,8 @@ class User(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     modified_at = models.DateTimeField(auto_now=True)
     device_token = models.CharField(max_length=250, null=True)
+    device_help_user= models.BooleanField(default=False)
+
 
 
     def _get_full_number(self):

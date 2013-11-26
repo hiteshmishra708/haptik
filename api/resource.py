@@ -16,10 +16,13 @@ class BusinessResource(ModelResource):
         queryset = Business.objects.filter()
         resource_name = "business"
         limit = 1000
+        ordering = ['name']
         filtering = {
             'modified_at' : ['gte' , 'lte'],
             'country_code' : ALL_WITH_RELATIONS,
             'id' : ALL_WITH_RELATIONS,
+            'haptik_flag' : ALL_WITH_RELATIONS,
+            'devicehelp_flag' : ALL_WITH_RELATIONS
         }
 
 
@@ -40,11 +43,16 @@ class UserResource(ModelResource):
             # If user exists unregister on XMPP server and  update the activation code
             user_obj = User.objects.filter(number = bundle.data['number'].strip()).all()
             user_name = urllib.unquote(bundle.data.get('first_name'))
+            device_help_user = bundle.data.get('device_help_user')
             if len(user_obj) > 0:
                 bundle.obj = user_obj[len(user_obj) - 1]
                 unregister_user(bundle.obj.number, bundle.obj.activate_code)
                 setattr(bundle.obj, 'activate_code', random_number)
                 setattr(bundle.obj, 'first_name', user_name)
+                if device_help_user:
+                    setattr(bundle.obj, 'device_help_user', device_help_user)
+                else:
+                    setattr(bundle.obj, 'device_help_user', False)
                 bundle.obj.verified = False
                 bundle.obj.first_name = smart_text(bundle.obj.first_name)
                 bundle.obj.save()
