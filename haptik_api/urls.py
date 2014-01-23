@@ -17,8 +17,6 @@ admin.autodiscover()
 
 urlpatterns = patterns('',
     # Examples:
-    (r'^static/(?P<path>.*)$', 'django.views.static.serve',
-            {'document_root': '/home/ubuntu/haptik_api/api/static'}),
     url(r'^$', 'api.views.web.index', name='index'),
 
     # Routing urls for HAPTIK API
