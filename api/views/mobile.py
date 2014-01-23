@@ -9,6 +9,43 @@ from django.views.decorators.csrf import csrf_exempt
 from api.lib.xmpp_lib import send_push_notification 
 from api.lib.chats import get_unique_chats
 from api.lib.sms_lib import send_activation_code
+from api.lib.beta_distrib import find_distrib_by_hex 
+import plistlib
+
+
+def distribute(request, hex_code):
+    user_agent = request.META['HTTP_USER_AGENT']
+    t = loader.get_template('distrib.html')
+    is_ios = False
+    is_android = False 
+    supported = True
+    hex_used = False
+    dis = find_distrib_by_hex(hex_code)
+    if not dis or not dis.active:
+        hex_used =True 
+    if 'iPhone' in user_agent:
+        is_ios = True
+        dis.active = False
+    elif 'Android' in user_agent:
+        is_android = True
+        dis.active = False
+    else:
+        supported = False
+    dis.save()
+    c = Context({'is_android' : is_android, 'is_ios' : is_ios, 'supported' : supported, 'hex_used' : hex_used})
+    response = HttpResponse(t.render(c))
+    return response
+    
+
+def beta_distrib(request):
+    t = loader.get_template('distrib.html')
+    c = Context({})
+    response = HttpResponse(t.render(c))
+    return response
+   
+def haptik_plist(request):
+    plist = plistlib.readPlist('/home/ubuntu/haptik_api/api/static/distrib/Haptik.plist')
+    return HttpResponse(plist, mimetype='text/xml') 
 
 def index(request):
     return HttpResponse("Hello, world. TESTTTTT.")
@@ -54,6 +91,7 @@ def chats(request, user_name):
 
 
 def get_chat_history(request):
+    print 'REQUEST: ', request
     user = request.GET.get('user')
     business = request.GET.get('business')
     #user = user.split('@')[0]

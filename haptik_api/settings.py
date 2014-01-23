@@ -2,9 +2,10 @@
 import os
 
 SITE_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+BASE_PATH = os.path.dirname(__file__)
 
-DEBUG = False
-#TASTYPIE_FULL_DEBUG = True
+DEBUG = True
+TASTYPIE_FULL_DEBUG = False
 TEMPLATE_DEBUG = DEBUG
 
 ADMINS = (
@@ -34,11 +35,13 @@ DATABASES = {
     }
 }
 
-#DATABASE_ROUTERS = ['api.models.db_router.DBRouter']
+DATABASE_ROUTERS = ['api.models.db_router.DBRouter']
+
+LOGIN_URL = '/login/'
 
 # Hosts/domain names that are valid for this site; required if DEBUG is False
 # See https://docs.djangoproject.com/en/1.5/ref/settings/#allowed-hosts
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = ['haptik.co', 'www.haptik.co']
 
 # Local time zone for this installation. Choices can be found here:
 # http://en.wikipedia.org/wiki/List_of_tz_zones_by_name
@@ -65,12 +68,12 @@ USE_TZ = True
 
 # Absolute filesystem path to the directory that will hold user-uploaded files.
 # Example: "/var/www/example.com/media/"
-MEDIA_ROOT = ''
+MEDIA_ROOT =os.path.join(SITE_ROOT, 'api', 'media') 
 
 # URL that handles the media served from MEDIA_ROOT. Make sure to use a
 # trailing slash.
 # Examples: "http://example.com/media/", "http://media.example.com/"
-MEDIA_URL = ''
+MEDIA_URL = '/media/'
 
 # Absolute path to the directory static files should be collected to.
 # Don't put anything in this directory yourself; store your static files
@@ -146,6 +149,7 @@ INSTALLED_APPS = (
     'bootstrap_toolkit',
     # Uncomment the next line to enable the admin:
      'django.contrib.admin',
+     'django_mobile_app_distribution',
     # Uncomment the next line to enable admin documentation:
     # 'django.contrib.admindocs',
 )
@@ -183,10 +187,11 @@ PYAPNS_CONFIG = {
     'HOST': 'http://localhost:7077/',
     'TIMEOUT': 15,
     'INITIAL': [
-        ('Haptik', '/home/ubuntu/apns-dev.pem', 'sandbox'),
+        ('Haptik', '/home/ubuntu/haptikEnterprisePush.pem', 'production'),
     ]
 }
-
+PIPELINE_YUI_BINARY = '/usr/bin/yui-compressor'
+PIPELINE_LESS_BINARY = '/usr/local/lib/node_modules/less/bin/lessc' 
 
 STATICFILES_STORAGE = 'pipeline.storage.PipelineCachedStorage'
 
@@ -200,7 +205,7 @@ PIPELINE_CSS = {
             'less/bootstrap.less',
             'less/responsive.less'
         ),
-        'output_filename': 'css/b.css',
+        'output_filename': 'css/b.less',
         'extra_context': {
             'media': 'screen,projection',
         },

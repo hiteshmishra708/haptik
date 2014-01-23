@@ -1,12 +1,16 @@
-from django.template import Context, loader
+from django.template import Context, loader, RequestContext
+from django.contrib.auth import authenticate, login, logout
 from django.http import HttpResponse, HttpResponseRedirect
 from api.models.default import Business, Faqs, CountriesSupported, User
 from api.form import BusinessForm, FaqForm, Category, Location
-from django.shortcuts import render
+from django.shortcuts import render, render_to_response
 from api.lib.xmpp_lib import send_push_from_business_to_favs, register_user
 from api.lib.sms_lib import send_activation_code
 from django.views.decorators.csrf import csrf_exempt, csrf_protect
+from django.contrib.auth.decorators import login_required
 from api import const
+from api.lib.beta_distrib import create_beta_distrib_url
+import json
 
 
 def index(request):
@@ -14,8 +18,27 @@ def index(request):
     c = Context({})
     response = HttpResponse(t.render(c))
     return response
-    
+   
+@login_required
+def create_distrib_url(request):
+    t = loader.get_template('create_url.html')
+    c = Context({})
+    response = HttpResponse(t.render(c))
+    return response
 
+
+def ajax_create_url(request):
+    if request.method == 'GET':
+        number = request.GET.get('number');
+        url = create_beta_distrib_url(number)
+        resp = {'url' : url}
+        return HttpResponse(json.dumps(resp), mimetype="application/json" )
+    else:
+        print 'NOT GET'
+    return HttpResponse(False)
+
+
+@login_required
 def business_admin(request):
     all_businesses = Business.objects.filter(active=1).all()
     t = loader.get_template('all_business.html')
@@ -23,6 +46,7 @@ def business_admin(request):
     response = HttpResponse(t.render(c))
     return response
 
+@login_required
 def business_faqs(request, business_id):
     business = Business.objects.get(pk=business_id)
     all_faqs = Faqs.objects.filter(business_id=business_id).order_by("-relevance").all()
@@ -32,6 +56,7 @@ def business_faqs(request, business_id):
     return response
 
 
+@login_required
 def push_to_favs(request, business_id):
     t = loader.get_template('push_to_favs.html')
     c = Context({'business_id': business_id})
@@ -53,6 +78,7 @@ def ajax_send_message(request, business_id):
         return HttpResponse(True)
     return HttpResponse(False)
 
+@login_required
 def add_business(request, business_id=0):
     if request.method == 'POST':
         if(business_id):
@@ -98,6 +124,7 @@ def add_business(request, business_id=0):
     })
 
 
+@login_required
 def add_faqs(request, business_id, faq_id=0):
     business = Business.objects.get(pk=business_id)
     if request.method == 'POST':
@@ -125,3 +152,55 @@ def add_faqs(request, business_id, faq_id=0):
     return render(request, 'add_faqs.html',{
         'form' : form,
     })
+
+
+def user_login(request):
+    # Like before, obtain the context for the user's request.
+    context = RequestContext(request)
+
+    # If the request is a HTTP POST, try to pull out the relevant information.
+    if request.method == 'POST':
+        # Gather the username and password provided by the user.
+        # This information is obtained from the login form.
+        username = request.POST['username']
+        password = request.POST['password']
+
+        # Use Django's machinery to attempt to see if the username/password
+        # combination is valid - a User object is returned if it is.
+        user = authenticate(username=username, password=password)
+
+        # If we have a User object, the details are correct.
+        # If None (Python's way of representing the absence of a value), no user
+        # with matching credentials was found.
+        if user is not None:
+            # Is the account active? It could have been disabled.
+            if user.is_active:
+                # If the account is valid and active, we can log the user in.
+                # We'll send the user back to the homepage.
+                login(request, user)
+                return HttpResponseRedirect('/business_admin/')
+            else:
+                # An inactive account was used - no logging in!
+                return HttpResponse("Your account is disabled.")
+        else:
+            # Bad login details were provided. So we can't log the user in.
+            print "Invalid login details: {0}, {1}".format(username, password)
+            return HttpResponse("Invalid login details supplied.")
+
+    # The request is not a HTTP POST, so display the login form.
+    # This scenario would most likely be a HTTP GET.
+    else:
+        # No context variables to pass to the template system, hence the
+        # blank dictionary object...
+        return render_to_response('login.html', {}, context)
+
+@login_required
+def user_logout(request):
+    # Like before, obtain the request's context.
+    context = RequestContext(request)
+
+    # Since we know the user is logged in, we can now just log them out.
+    logout(request)
+
+    # Take the user back to the homepage.
+    return HttpResponseRedirect('/login/')

@@ -1,6 +1,7 @@
 var whichQuote = true;
 var debugging = false;
 var abcase;
+var inputText;
 $("document").ready(function() {//$(window).load() must be used instead of $(document).ready() because of Webkit compatibility
 	var query = get_query();
 	if (query.debug === "true") {
@@ -17,22 +18,29 @@ $("document").ready(function() {//$(window).load() must be used instead of $(doc
 	});
 
 	$("input#s-head").focusin(function() {
-		$(this).attr("value", "");
+		var currentValue = $(this).attr("value");
+		if (currentValue === inputText)
+			$(this).attr("value", "");
 	});
+	$("input#s-head").focusout(function() {
+		var currentValue = parseInt($(this).attr("value").trim());
+		if (currentValue === "")
+			$(this).attr("value", inputText);
+	})
 	$("cite").hover(function(e) {
 		$("li.callingCode").css("display", "block");
-		//$("h6.facebooklike").css("display", "none");
+		$("h6.facebooklike").css("display", "none");
 	}, function(e) {
 		$("li.callingCode").css("display", "none");
-		//$("h6.facebooklike").css("display", "block");
+		$("h6.facebooklike").css("display", "block");
 
 	});
 	$("ul#chooseCallingCode").hover(function(e) {
 		$("li.callingCode").css("display", "block");
-		//$("h6.facebooklike").css("display", "none");
+		$("h6.facebooklike").css("display", "none");
 	}, function(e) {
 		$("li.callingCode").css("display", "none");
-		//$("h6.facebooklike").css("display", "block");
+		$("h6.facebooklike").css("display", "block");
 
 	});
 	$("article.hatein").hover(function(e) {
@@ -74,11 +82,14 @@ function getCountry() {
 
 function abtesting() {
 	abcase = Math.random();
+	abcase = 1;
+	//testing over for now
 	if (abcase <= 0.5) {
-		$("input#s-head").attr("value", "Enter your mobile number for early access");
+		inputText = "Enter your mobile number for early access";
 	} else {
-		$("input#s-head").attr("value", "Enter your mobile number for a chance to get early access");
+		inputText = "Enter your mobile number for a chance to get early access";
 	}
+	$("input#s-head").attr("value", inputText);
 }
 
 function checkIfHuman(title) {
@@ -236,7 +247,7 @@ function generateParas(text) {
 }
 
 function generateAlsoRead(postEntry) {
-	return '<li><a target="_blank" href="' + postEntry.url + '">' + postEntry['regular-title'] + '</a></li>';
+	return '<li><a target="_blank" href="' + postEntry["url-with-slug"] + '">' + postEntry['regular-title'] + '</a></li>';
 }
 
 function quoteTimer() {
@@ -258,13 +269,19 @@ function quoteTimer() {
 
 function setBlog(data) {
 	var ulHTML = "";
-	$("h2#blogTitle").html(data.posts[0]['regular-title']);
-	var postHTML = data.posts[0]['regular-body'];
-	$("div#postImage").css("background-image", 'url(' + $(postHTML).find('img:first').attr("src") + ')');
-	$("p#slug").text($(postHTML).text());
-	$("a#fullStory").attr("href", data.posts[0].url);
-	$("a#fullStory").attr("href", data.posts[0].url);
-	$(".ellipsis").ellipsis();
+	if (data.posts[0].type === "regular") {
+		$("h2#blogTitle").html(data.posts[0]['regular-title']);
+		var postHTML = data.posts[0]['regular-body'];
+		$("div#postImage").css("background-image", 'url(' + $(postHTML).find('img:first').attr("src") + ')');
+		$("p#slug").text($(postHTML).text());
+		$("a#fullStory").attr("href", data.posts[0]["url-with-slug"]);
+		$(".ellipsis").ellipsis();
+	}
+	else if (data.posts[0].type === "video"){
+		$("p#slug").html(data.posts[0]['video-caption']);
+		$("div#postImage").html(data.posts[0]["video-source"]);
+		$("a#fullStory").attr("href", data.posts[0]["url-with-slug"]);
+	}
 	if (data.posts.length == 1) {
 		$("#morePosts").css("display", "none");
 	}

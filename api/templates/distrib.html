@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/xml; charset=iso-8859-1">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" /> 
+  <title>Install Haptik</title>
+  <style type="text/css">
+    body {
+      background: url(bkg.png) repeat #209acc;
+      font-family: Helvetica, arial, sans-serif;
+    }
+    .congrats {
+      font-size: 16pt;
+      padding: 6px;
+      text-align: center;
+    }
+    .step {
+      background: white;
+      border: 1px #ccc solid;
+      border-radius: 14px;
+      padding: 4px 10px;
+      margin: 10px 0;
+    }
+    .instructions {
+      font-size: 10pt;
+    }
+    .arrow {
+      font-size: 15pt;
+    }
+    table {
+      width: 100%;
+    }
+  </style>
+</head>
+<body>
+
+{% if hex_used %}
+        <div class="congrats">Sorry, looks like you have already used this link. Please email <a href="mailto:aakrit@haptik.co">us</a> to request for a new download link. Thanks.</div>
+{% else %}
+    {% if supported %}
+        <div class="congrats">Congrats! You've been invited to beta test Haptik on
+        {% if is_ios %}
+            iOS.
+        {% else %}
+            android.
+        {% endif %}
+        </div>
+
+        <div class="step">
+        <table>
+            <tr>
+                <td class="instructions">Install the<br /><b>Haptik app</b></td>
+                <td width="24" class="arrow">&rarr;</td>
+                <td width="57" class="imagelink">
+                {% if is_ios %}
+                    <a href="itms-services://?action=download-manifest&url=http://haptik.co/static/distrib/Haptik.plist">
+                        <img src="/static/img/haptikSmall.png" height="57" width="57" />
+                    </a>
+                {% else %}
+                    <a href="/static/distrib/haptik_android.apk">
+                        <img src="/static/img/haptikSmall.png" height="57" width="57" />
+                    </a>
+                {% endif %}
+                </td>
+            </tr>
+        </table>
+        </div>
+        {% if is_android %}
+            <div class="congrats">NOTE: You will need to have the setting "Allow installation of apps from unknown sources" enabled.<br/>
+            Once downloaded, please click on the .APK file to begin installattion.</div>
+        {% endif %}
+    {% else %}
+        <div class="congrats">Sorry we dont support this platform.</div>
+    {% endif %}
+{% endif %}
+
+</body>
+</html>
+

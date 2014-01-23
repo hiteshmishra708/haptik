@@ -201,6 +201,23 @@ class SMSLog(models.Model):
         app_label= 'api'
 
 
+class BetaDistrib(models.Model):
+    number = models.CharField(max_length=30)
+    hex_code = models.CharField(max_length=10)
+    active = models.BooleanField(default=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    modified_at = models.DateTimeField(auto_now=True)
+
+    def __unicode__(self):
+        return unicode_class(self)
+
+    def to_dict(self):
+        return convert_to_dict(self)
+
+    class Meta:
+        db_table = 'api_beta_distrib'
+        app_label= 'api'
+
 
 def unicode_class(obj):
     s = ''

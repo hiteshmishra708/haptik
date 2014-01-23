@@ -9,6 +9,7 @@
                 <th>Name</th>
                 <th>Chat Handle</th>
                 <th>Email</th>
+                <th>Active</th>
                 <th>FAQS</th>
             </tr>
         </thead>
@@ -19,6 +20,7 @@
                     <td> {{ row.name }}</td>
                     <td> {{ row.xmpp_handle }} </td>
                     <td> {{ row.email }} </td>
+                    <td> {{ row.active }}</td>
                     <td> <a href="/business_faqs/{{ row.id}}/">FAQs</a></td>
                 </tr>
             {% endfor %}

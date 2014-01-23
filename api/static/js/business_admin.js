@@ -149,9 +149,9 @@ $(document).ready(function() {
     });
 
 
-
     $(function(){
-        $(".up,.down").click(function(){
+        $(".up,.down").click(function(e){
+            e.stopPropagation();
             var row = $(this).parents("tr:first");
             var faqId = parseInt(row.attr("id"));
             if ($(this).is(".up")) {
