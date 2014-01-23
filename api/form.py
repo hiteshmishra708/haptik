@@ -30,7 +30,7 @@ class BusinessForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         print 'IN INIT'
         super(BusinessForm, self).__init__(*args, **kwargs)
-        for key in ['email' , 'website', 'facebook', 'twitter' , 'phone_number']:
+        for key in ['email' , 'website', 'facebook', 'twitter' , 'phone_number', 'preview_text']:
             self.fields[key].required = False
         
     class Meta:

@@ -35,7 +35,7 @@ DATABASES = {
     }
 }
 
-#DATABASE_ROUTERS = ['api.models.db_router.DBRouter']
+DATABASE_ROUTERS = ['api.models.db_router.DBRouter']
 
 LOGIN_URL = '/login/'
 

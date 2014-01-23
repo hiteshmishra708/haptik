@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% block content %}
+{% load api_tags %}
+    <table class='span8 table table-bordered table-hover '>
+        <caption class="table-caption">Chat logs between {{ business_handle}}  and {{ user_number }}</caption>
+        <thead>
+            <tr>
+                <th>Time (IST)</th>
+                <th>Message</th>
+                <th>Direction</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for row in chats%}
+                <tr>
+                    <td> {{ row.utc|convert_to_ist}} </td>
+                    <td> {{ row.msg}}</td>
+                    <td>
+                    {% if row.direction %}
+                        Agent
+                    {% else %}
+                        User
+                    {% endif %}
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <div class="clear">
+    <div style="padding-top: 10px; padding-left: 25px;">
+        <div class="span4"><b>Message :</b></div>
+        <textarea class="span8" rows="4" cols="50" max_length="2000" id="message">
+        </textarea>
+    </div>
+
+    <button type="button" class="btn btn-primary" id="reply_to_user" from_value="{{business_handle}}" to_value="{{user_number}}">Send</button>
+{% endblock %}

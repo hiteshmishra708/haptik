@@ -150,6 +150,58 @@ $(document).ready(function() {
 
 
     $(function(){
+        $("#send_push_to_users").click(function(){
+            alert('in here');
+            var businessHandle = $(this).attr("value");
+            var message = $("textarea#message").val();
+            console.log('sending message');
+            $.ajax({
+                type: 'GET',
+                url: '/ajax_send_push_to_users/',
+                data: { 'business_handle' : businessHandle , 'message' : message},
+                headers: {
+                    "Content-Type" : "application/json"
+                },
+                success: function(data){
+                    alert('Sent');
+                    window.location = '/business_user_history/'+businessHandle+'/';
+                },
+                error: function(data){
+                    alert('There was some problem sending');
+                },
+            });
+            
+        })
+    });
+
+
+    $(function(){
+        $("#reply_to_user").click(function(){
+            var from_business = $(this).attr("from_value");
+            var to_user = $(this).attr("to_value");
+            var message = $("textarea#message").val();
+            console.log(from_business);
+            console.log(to_user);
+            $.ajax({
+                type: 'GET',
+                url: '/ajax_reply_to_user/',
+                data: {'from' : from_business, 'to' : to_user, 'message' : message},
+                headers: {
+                    "Content-Type" : "application/json"
+                },
+                success: function(data){
+                    alert('Sent');
+                    location.reload();
+                },
+                error: function(data){
+                    alert('There was some problem sending');
+                },
+            });
+        })
+    });
+
+
+    $(function(){
         $(".up,.down").click(function(e){
             e.stopPropagation();
             var row = $(this).parents("tr:first");

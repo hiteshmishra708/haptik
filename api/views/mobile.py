@@ -1,4 +1,4 @@
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseRedirect
 from django.template import Context, loader
 from django.core import serializers
 from django.core.mail import send_mail
@@ -12,6 +12,16 @@ from api.lib.chats import get_unique_chats
 from api.lib.sms_lib import send_activation_code
 from api.lib.beta_distrib import find_distrib_by_hex 
 import plistlib
+
+def device_help(request):
+    user_agent = request.META['HTTP_USER_AGENT']
+    if 'iPhone' in user_agent:
+        return HttpResponseRedirect('https://itunes.apple.com/us/app/device-help/id760076884?mt=8')
+    elif 'Android' in user_agent:
+        return HttpResponseRedirect('https://play.google.com/store/apps/details?id=co.haptik.devicehelp&referrer=utm_source%3Dredirect')
+    return HttpResponseRedirect('/')
+
+
 
 
 def distribute(request, hex_code):
@@ -123,7 +133,7 @@ def post_message(request):
         if to and not to.isdigit():
             business = Business.objects.get(xmpp_handle = '%s@zingcredits.com' % to)
             subject= 'Message sent to %s'  % (business.name)
-            message = '%s sent the following message to %s: %s' % (from_user, business.name, body)
+            message = '%s sent the following message to %s: %s           haptik.co/chat_logs/%s/%s' % (from_user, business.name, body, from_user, to)
             send_mail(subject, message, 'swapan@haptik.co', const.kEMAILS_FOR_BUSINESS_MESG)
         else:
             business = Business.objects.get(xmpp_handle = '%s@zingcredits.com' % from_user)
@@ -131,7 +141,15 @@ def post_message(request):
             to_user = User.objects.filter(number=to)[0]
             print 'FULL USER : ', to_user
             full_body = '%s: %s' % (business.name, body)
-            send_push_notification(to_user, full_body)
+            #if the device token has a space it means
+            # the user is an iphone user, if the device_token dosent have a space
+            # it means they are an android user
+            if to_user.device_token:
+                if ' ' in to_user.device_token.strip():
+                    send_push_notification(to_user, full_body)
+                else:
+                    if to_user.device_token.strip() != 'temporaryAndroidTokenUntilSorted':
+                        send_android_push(to_user)
     except Exception, e:
         print ' in post expcetion: ', e
     return HttpResponse('Done')
