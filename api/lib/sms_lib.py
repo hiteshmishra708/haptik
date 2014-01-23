@@ -1,6 +1,6 @@
 from twilio.rest import TwilioRestClient
 import urllib, urllib2
-from api.models.default import SMSLog
+from api.models.default import SMSLog, WebsiteSignups
 from api import const
 
 
@@ -37,6 +37,29 @@ def send_message_using_twilio(country_code, to_number, message_body, msg_type = 
     log_row.save()
 
 
+def send_message_to_signups():
+    #message = 'Hi! You are receiving this because you signed up for Haptik. We are excited to introduce our first app DeviceHelp. Download on iOS/Android: http://goo.gl/SfdJ3L'
+    #a = WebsiteSignups.objects.get(number='2177211755')
+    message = 'Hi there! You are receiving this message because you signed up for Haptik. We are excited to introduce to you our first app Device Help. Download now for iOS/Android: http://www.haptik.co/downloaddevicehelp'
+    all_rows = WebsiteSignups.objects.all()
+    #all_rows = [WebsiteSignups.objects.filter(number='9840055418')[0]]
+    for row in all_rows:
+        try:
+            number = int(row.number.strip())
+            country_code = int(row.country_code.strip())
+            if country_code == 91:
+                if len(row.number.strip())==10:
+                    print 'sending message : ', country_code, ' ', number
+                    send_sms_using_exotel(number, message)
+                    #send_message_using_twilio(country_code, number, message, 'website_signup')
+                else:
+                    print 'weird number :', row.number
+        except Exception, e:
+            print 'could not send to  : ', row.number
+            print 'exception : ', e
+
+
+
 def send_activation_code(country_code, to_number, activation_code):
     country_code = country_code.strip()
     to_number = to_number.strip()
@@ -44,7 +67,7 @@ def send_activation_code(country_code, to_number, activation_code):
         message = 'Your Haptik verification code is %s' % activation_code
         send_sms_using_exotel(to_number, message)
     else:
-        message = 'Your Haptik verification code is %s' % activation_code
+        message = 'Your Device Help verification code is %s' % activation_code
         send_message_using_twilio(country_code, to_number, message)
 
 # Only for India, that is why we dont include the country code here
