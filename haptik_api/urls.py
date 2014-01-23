@@ -1,6 +1,7 @@
 from django.conf.urls import patterns, include, url
 from api.resource import BusinessResource, MessageResource, CollectionResource, UserResource, FavouriteResource, FaqsResource, WebsiteSignupResource, CountriesSupportedResource
 from tastypie.api import Api
+from django.views.generic import TemplateView
 
 v1_api = Api(api_name="v1")
 v1_api.register(BusinessResource())
@@ -43,4 +44,25 @@ urlpatterns = patterns('',
     url(r'^distribute/(?P<hex_code>\w+)/$', 'api.views.mobile.distribute'),
     url(r'^create_distrib_url/', 'api.views.web.create_distrib_url'),
     url(r'^ajax_create_url/', 'api.views.web.ajax_create_url'),
+    url(r'^india/vodafone/', 'api.views.web.company_pages'),
+    url(r'^india/flipkart/', 'api.views.web.company_flipkatk'),
+    url(r'^india/pvr-cinemas/', 'api.views.web.company_pvr'),
+    url(r'^terms/', 'api.views.web.terms'),
+    url(r'^privacy/', 'api.views.web.privacy'),
+    url(r'^why_phonenumber/', 'api.views.web.why_phone'),
+    url(r'^history_businesses/', 'api.views.chat_history.get_businesses'),
+    url(r'^business_user_history/(?P<business_handle>\w+)/$', 'api.views.chat_history.get_users_for_business'),
+    url(r'^chat_logs/(?P<user_number>\w+)/(?P<business_handle>\w+)/$', 'api.views.chat_history.chat_logs'),
+    url(r'^unique_users/', 'api.views.chat_history.unique_users'),
+    url(r'^user_businesses/(?P<user_number>\w+)/', 'api.views.chat_history.user_businesses'),
+    url(r'^device_help/', 'api.views.mobile.device_help'),
+    url(r'^devicehelp/', 'api.views.mobile.device_help'),
+    url(r'^downloaddevicehelp/', 'api.views.mobile.device_help'),
+    url(r'^send_push_to_users/(?P<business_handle>\w+)/$', 'api.views.chat_history.send_push_to_users'),
+    url(r'^ajax_send_push_to_users/', 'api.views.chat_history.ajax_send_push_to_users'),
+    url(r'^ajax_reply_to_user/', 'api.views.chat_history.ajax_reply_to_user'),
+    url(r'^share/', 'api.views.web.share'),
+
+    #url(r'^robots\.txt$', TemplateView.as_view(template_name="robots.txt", content_type='text/plain')),
+    #url(r'^sitemap\.xml', TemplateView.as_view(template_name="sitemap.xml", content_type='application/xml')),
 )

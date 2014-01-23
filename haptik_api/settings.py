@@ -4,7 +4,7 @@ import os
 SITE_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 BASE_PATH = os.path.dirname(__file__)
 
-DEBUG = True
+DEBUG = False
 TASTYPIE_FULL_DEBUG = False
 TEMPLATE_DEBUG = DEBUG
 
@@ -87,7 +87,7 @@ STATIC_URL = '/static/'
 
 # Additional locations of static files
 STATICFILES_DIRS = (
-    "/home/ubuntu/haptik_api/api/static_files",
+    os.path.join(SITE_ROOT, 'api', 'static_files') ,
     # Put strings here, like "/home/html/static" or "C:/www/django/static".
     # Always use forward slashes, even on Windows.
     # Don't forget to use absolute paths, not relative paths.
@@ -147,6 +147,7 @@ INSTALLED_APPS = (
     'pipeline',
     'twitter_bootstrap',
     'bootstrap_toolkit',
+    'django.contrib.sitemaps',
     # Uncomment the next line to enable the admin:
      'django.contrib.admin',
      'django_mobile_app_distribution',
@@ -188,6 +189,8 @@ PYAPNS_CONFIG = {
     'TIMEOUT': 15,
     'INITIAL': [
         ('Haptik', '/home/ubuntu/haptikEnterprisePush.pem', 'production'),
+        ('DeviceHelpDev', '/home/ubuntu/PushCerts/DeviceHelpDev.pem', 'sandbox'),
+        ('DeviceHelpProd', '/home/ubuntu/PushCerts/DeviceHelpProd.pem', 'production'),
     ]
 }
 PIPELINE_YUI_BINARY = '/usr/bin/yui-compressor'
@@ -233,3 +236,8 @@ PIPELINE_JS = {
     },
 }
 
+EMAIL_HOST = 'smtp.webfaction.com'
+EMAIL_HOST_USER = 'haptik'
+EMAIL_HOST_PASSWORD = 'Batman1305'
+DEFAULT_FROM_EMAIL = 'swapan@haptik.co'
+SERVER_EMAIL = 'swapan@haptik.co'

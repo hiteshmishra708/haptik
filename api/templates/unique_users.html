@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block content %}
+    <table class='span8 table table-bordered table-hover '>
+        <caption class="table-caption">All businesses with interactions</caption>
+        <thead>
+            <tr>
+                <th>User Number</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for row in users %}
+                <tr>
+                    <td> <a href="/user_businesses/{{ row }}/">{{ row }} </a></td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}

@@ -1,6 +1,7 @@
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseRedirect
 from django.template import Context, loader
 from django.core import serializers
+from django.core.mail import send_mail
 import json
 from api.models.default import *
 from api.models.ejabber import Messages, Collections
@@ -12,6 +13,16 @@ from api.lib.sms_lib import send_activation_code
 from api.lib.beta_distrib import find_distrib_by_hex 
 import plistlib
 
+def device_help(request):
+    user_agent = request.META['HTTP_USER_AGENT']
+    if 'iPhone' in user_agent:
+        return HttpResponseRedirect('https://itunes.apple.com/us/app/device-help/id760076884?mt=8')
+    elif 'Android' in user_agent:
+        return HttpResponseRedirect('https://play.google.com/store/apps/details?id=co.haptik.devicehelp&referrer=utm_source%3Dredirect')
+    return HttpResponseRedirect('/')
+
+
+
 
 def distribute(request, hex_code):
     user_agent = request.META['HTTP_USER_AGENT']
@@ -21,17 +32,19 @@ def distribute(request, hex_code):
     supported = True
     hex_used = False
     dis = find_distrib_by_hex(hex_code)
-    if not dis or not dis.active:
-        hex_used =True 
+    #if not dis or not dis.active:
+    #    hex_used =True 
     if 'iPhone' in user_agent:
         is_ios = True
-        dis.active = False
+        #dis.active = False
     elif 'Android' in user_agent:
         is_android = True
-        dis.active = False
+        #dis.active = False
     else:
         supported = False
-    dis.save()
+    if dis:
+        dis.active = False
+        dis.save()
     c = Context({'is_android' : is_android, 'is_ios' : is_ios, 'supported' : supported, 'hex_used' : hex_used})
     response = HttpResponse(t.render(c))
     return response
@@ -109,19 +122,36 @@ def get_chat_history(request):
 
 @csrf_exempt
 def post_message(request):
-    print 'request : ' , request
-    print 'just got posted'
-    to = request.POST.get('to')
-    print 'TO : ', to
-    body = request.POST.get('body')
-    print 'BODY : ', body
-    from_user = request.POST.get('from')
-    business = Business.objects.get(xmpp_handle = '%s@zingcredits.com' % from_user)
-    print 'from : ', business
-    to_user = User.objects.filter(number=to)[0]
-    print 'FULL USER : ', to_user
-    full_body = '%s: %s' % (business.name, body)
-    send_push_notification(to_user, full_body)
+    try: 
+        print 'request : ' , request
+        print 'just got posted'
+        to = request.POST.get('to')
+        print 'TO : ', to
+        body = request.POST.get('body')
+        print 'BODY : ', body
+        from_user = request.POST.get('from')
+        if to and not to.isdigit():
+            business = Business.objects.get(xmpp_handle = '%s@zingcredits.com' % to)
+            subject= 'Message sent to %s'  % (business.name)
+            message = '%s sent the following message to %s: %s           haptik.co/chat_logs/%s/%s' % (from_user, business.name, body, from_user, to)
+            send_mail(subject, message, 'swapan@haptik.co', const.kEMAILS_FOR_BUSINESS_MESG)
+        else:
+            business = Business.objects.get(xmpp_handle = '%s@zingcredits.com' % from_user)
+            print 'from : ', business
+            to_user = User.objects.filter(number=to)[0]
+            print 'FULL USER : ', to_user
+            full_body = '%s: %s' % (business.name, body)
+            #if the device token has a space it means
+            # the user is an iphone user, if the device_token dosent have a space
+            # it means they are an android user
+            if to_user.device_token:
+                if ' ' in to_user.device_token.strip():
+                    send_push_notification(to_user, full_body)
+                else:
+                    if to_user.device_token.strip() != 'temporaryAndroidTokenUntilSorted':
+                        send_android_push(to_user)
+    except Exception, e:
+        print ' in post expcetion: ', e
     return HttpResponse('Done')
     
 

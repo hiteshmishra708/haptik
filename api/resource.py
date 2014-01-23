@@ -16,10 +16,13 @@ class BusinessResource(ModelResource):
         queryset = Business.objects.filter()
         resource_name = "business"
         limit = 1000
+        ordering = ['name']
         filtering = {
             'modified_at' : ['gte' , 'lte'],
             'country_code' : ALL_WITH_RELATIONS,
             'id' : ALL_WITH_RELATIONS,
+            'haptik_flag' : ALL_WITH_RELATIONS,
+            'devicehelp_flag' : ALL_WITH_RELATIONS
         }
 
 
@@ -40,11 +43,16 @@ class UserResource(ModelResource):
             # If user exists unregister on XMPP server and  update the activation code
             user_obj = User.objects.filter(number = bundle.data['number'].strip()).all()
             user_name = urllib.unquote(bundle.data.get('first_name'))
+            device_help_user = bundle.data.get('device_help_user')
             if len(user_obj) > 0:
                 bundle.obj = user_obj[len(user_obj) - 1]
                 unregister_user(bundle.obj.number, bundle.obj.activate_code)
                 setattr(bundle.obj, 'activate_code', random_number)
                 setattr(bundle.obj, 'first_name', user_name)
+                if device_help_user:
+                    setattr(bundle.obj, 'device_help_user', device_help_user)
+                else:
+                    setattr(bundle.obj, 'device_help_user', False)
                 bundle.obj.verified = False
                 bundle.obj.first_name = smart_text(bundle.obj.first_name)
                 bundle.obj.save()
@@ -103,14 +111,15 @@ class FavouriteResource(ModelResource):
     business = fields.ForeignKey(BusinessResource, 'business', full=True)
 
     class Meta:
-        queryset = Favourite.objects.filter(active=1)
+        queryset = Favourite.objects.all()
         authorization = Authorization()
         resource_name = "favourite"
         allowed = ['get', 'put', 'patch', 'post']
         ordering = ["id"]
         always_return_data = True
         filtering = {
-            'user' : ALL_WITH_RELATIONS
+            'user' : ALL_WITH_RELATIONS,
+            'active' : ALL_WITH_RELATIONS
         }
     
 #FOR SOEM ODD REASON THIS PUT IS NOT WORKING. SO I HAD TO OVERRIDE IT
@@ -119,6 +128,27 @@ class FavouriteResource(ModelResource):
         bundle.obj = Favourite.objects.get(id=faq_id)
         bundle.obj.active = bundle.data.get('active')
         bundle.obj.save()
+        return bundle
+
+    def obj_create(self, bundle, **kwargs):
+        print 'in favorite create : ', bundle
+        try:
+            business = bundle.data['business']
+            user = bundle.data['user']
+            user = user.replace('/api/v1/user', '')
+            user = user.replace('/', '')
+            business = business.replace('/api/v1/business' , '')
+            business = business.replace('/', '')
+            fav_obj = Favourite.objects.filter(business_id = business, user_id = user)
+            if len(fav_obj) > 0:
+                bundle.obj = fav_obj[0]
+                bundle.obj.active = 1
+                bundle.obj.save()
+                return bundle
+        except Exception, e:
+            print 'IN FAVORITE OBJECT CREATE EXPCETION: ', e
+        # if user dosent exist or there is an error create a new one
+        bundle = super(FavouriteResource, self).obj_create(bundle, **kwargs)
         return bundle
 
 
@@ -168,9 +198,12 @@ class FaqsResource(ModelResource):
         queryset = Faqs.objects.all()
         resource_name = "faqs"
         excludes = ['answer']
+        limit = 1000
         authorization = Authorization()
         always_return_data = True
         filtering = {
+            'active' : ALL_WITH_RELATIONS,
+            'modified_at' : ['gte' , 'lte'],
             'business' : ALL_WITH_RELATIONS
         }
 

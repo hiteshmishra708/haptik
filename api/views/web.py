@@ -4,7 +4,7 @@ from django.http import HttpResponse, HttpResponseRedirect
 from api.models.default import Business, Faqs, CountriesSupported, User
 from api.form import BusinessForm, FaqForm, Category, Location
 from django.shortcuts import render, render_to_response
-from api.lib.xmpp_lib import send_push_from_business_to_favs, register_user
+from api.lib.xmpp_lib import send_push_from_business_to_favs, register_user, send_message_to_user
 from api.lib.sms_lib import send_activation_code
 from django.views.decorators.csrf import csrf_exempt, csrf_protect
 from django.contrib.auth.decorators import login_required
@@ -18,7 +18,51 @@ def index(request):
     c = Context({})
     response = HttpResponse(t.render(c))
     return response
+
+def terms(request):
+    t = loader.get_template('terms.html')
+    c = Context({})
+    response = HttpResponse(t.render(c))
+    return response
+
+def privacy(request):
+    t = loader.get_template('privacy.html')
+    c = Context({})
+    response = HttpResponse(t.render(c))
+    return response
+
+def why_phone(request):
+    t = loader.get_template('why_phone.html')
+    c = Context({})
+    response = HttpResponse(t.render(c))
+    return response
+
+def company_pages(request):
+    t = loader.get_template('vodafoneindia.html')
+    c = Context({})
+    response = HttpResponse(t.render(c))
+    return response
+
+def company_flipkatk(request):
+    t = loader.get_template('flipkart.html')
+    c = Context({})
+    response = HttpResponse(t.render(c))
+    return response
+
+def company_pvr(request):
+    t = loader.get_template('pvrcinemas.html')
+    c = Context({})
+    response = HttpResponse(t.render(c))
+    return response
+
    
+def share(request):
+    t = loader.get_template('share.html')
+    c = Context({})
+    response = HttpResponse(t.render(c))
+    return response
+
+
 @login_required
 def create_distrib_url(request):
     t = loader.get_template('create_url.html')
@@ -40,7 +84,7 @@ def ajax_create_url(request):
 
 @login_required
 def business_admin(request):
-    all_businesses = Business.objects.filter(active=1).all()
+    all_businesses = Business.objects.all()
     t = loader.get_template('all_business.html')
     c = Context({'businesses' : all_businesses})
     response = HttpResponse(t.render(c))
@@ -77,6 +121,7 @@ def ajax_send_message(request, business_id):
         send_push_from_business_to_favs(business_id, message.strip())
         return HttpResponse(True)
     return HttpResponse(False)
+
 
 @login_required
 def add_business(request, business_id=0):

@@ -30,7 +30,7 @@ class BusinessForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         print 'IN INIT'
         super(BusinessForm, self).__init__(*args, **kwargs)
-        for key in ['email' , 'website', 'facebook', 'twitter' , 'phone_number']:
+        for key in ['email' , 'website', 'facebook', 'twitter' , 'phone_number', 'preview_text']:
             self.fields[key].required = False
         
     class Meta:
@@ -40,7 +40,7 @@ class BusinessForm(forms.ModelForm):
         twitter = forms.CharField(widget = BootstrapTextInput(prepend='www.twitter.com/'))
         facebook = forms.CharField(widget = BootstrapTextInput(prepend='www.facebook.com/'))
         model = Business
-        fields = ('id', 'name', 'xmpp_handle', 'email', 'location', 'website', 'facebook', 'twitter', 'category', 'phone_number', 'active')
+        fields = ('id', 'name', 'xmpp_handle', 'email', 'location', 'website', 'facebook', 'twitter', 'category', 'phone_number', 'preview_text', 'active', 'haptik_flag', 'devicehelp_flag', 'devicehelp_active', 'ios_recommended' , 'android_recommended')
 
 class BusinessModelChoice(forms.ModelChoiceField):
     def label_from_instance(self, obj):

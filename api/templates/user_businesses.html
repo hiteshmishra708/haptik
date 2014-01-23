@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block content %}
+    {% load api_tags %}
+    <table class='span8 table table-bordered table-hover '>
+        <caption class="table-caption">All businesses with interactions</caption>
+        <thead>
+            <tr>
+                <th>Businesses</th>
+                <th>Last chat timei (IST)</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for row in businesses%}
+                <tr>
+                    <td> <a href="/chat_logs/{{ user_number }}/{{ row.us|cut:'@zingcredits.com' }}/">{{ row.us|cut:'@zingcredits.com' }} </a></td>
+                    <td>{{ row.change_utc|convert_to_ist}}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}
