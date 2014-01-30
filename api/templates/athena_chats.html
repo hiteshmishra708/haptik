@@ -1,0 +1,16 @@
+<div id="chat-messages">
+    {% for chat in chats %}
+        {% if chat.direction %}
+            <p class="chat from-user">
+        {% else %}
+            <p class="chat from-business">
+        {% endif %}
+                {{ chat.body }}
+            </p>
+        <div class="newline"></div>
+    {% endfor %}
+</div>
+<span class="clear"></span>
+<textarea type="text" class="chat-input" placeholder="Start Typing..."></textarea>
+<span class="clear"></span>
+

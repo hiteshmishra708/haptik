@@ -1,0 +1,5 @@
+{% for user in users %}
+    <tr class='user-row' coll_id="{{ user.coll_id }}" handle="{{ user.number }}">
+        <td class='users-name'>{{ user.first_name }}</td>
+    </tr>
+{% endfor %}

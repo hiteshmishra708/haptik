@@ -1,0 +1,43 @@
+<html>
+	<head>
+		<title>Athena - Chat Client</title>
+		<link rel='stylesheet' href='http://ajax.googleapis.com/ajax/libs/jqueryui/1.7.2/themes/cupertino/jquery-ui.css'>
+		<script src='http://ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.js'></script> 
+		<script src='http://ajax.googleapis.com/ajax/libs/jqueryui/1.7.2/jquery-ui.js'> </script>
+		<script src='/static/js/strophe.js'></script>
+		<link rel='stylesheet' href='/static/css/athena.css'>
+		<script type="text/javascript" src="/static/js/athena.js"></script>
+	</head>
+
+	<body>
+		<h1>Athena</h1>
+		<div id="left-bar">	
+			<table>
+				<caption>All Businesses</caption>
+				<tbody>
+					{% for business in businesses %}
+						<tr class="chat-business" name="{{ business.name }}" handle="{{ business.xmpp_handle }}" id="{{ business.id }}"> 
+							<td class="business-row">{{ business.name }}</td>
+						</tr>
+					{% endfor %}
+				</tbody>
+			</table>		
+		</div>
+
+		<div id="user-area">
+			<table id="userTable">
+				<caption>Users</caption>
+				<tbody id='user-roster'>
+					<!-- this is where all the users go -->
+				</tbody>
+			</table>
+		</div>
+
+		<div id="chat-area">
+			<!-- this is the place where chat goes -->
+		</div>
+
+
+
+	</body>
+</html>

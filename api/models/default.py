@@ -53,6 +53,8 @@ class User(models.Model):
     modified_at = models.DateTimeField(auto_now=True)
     device_token = models.CharField(max_length=250, null=True)
     device_help_user= models.BooleanField(default=False)
+    coll_id = models.IntegerField(null=True)
+    from_user = models.BooleanField(default=True)
 
 
 
@@ -224,6 +226,51 @@ class BetaDistrib(models.Model):
 
     class Meta:
         db_table = 'api_beta_distrib'
+        app_label= 'api'
+
+
+class ChatCollections(models.Model):
+    business_id = models.IntegerField()
+    user_id = models.IntegerField()
+    # Last direction: is the direction of the message
+    # True: from user to Business
+    # False: from business to user
+    from_user = models.BooleanField(default=True)
+    active = models.BooleanField(default=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    modified_at = models.DateTimeField(auto_now=True)
+
+    def __unicode__(self):
+        return unicode_class(self)
+
+    def to_dict(self):
+        return convert_to_dict(self)
+
+
+    class Meta:
+        db_table = 'api_chatcollections'
+        app_label= 'api'
+
+
+class ChatMessages(models.Model):
+    coll_id = models.IntegerField()
+    body = models.TextField()
+    # direction: is the direction of the message
+    # True: from user to Business
+    # False: from business to user
+    direction = models.BooleanField(default=True)
+    active = models.BooleanField(default=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    modified_at = models.DateTimeField(auto_now=True)
+
+    def __unicode__(self):
+        return unicode_class(self)
+
+    def to_dict(self):
+        return convert_to_dict(self)
+
+    class Meta:
+        db_table = 'api_chatmessaged'
         app_label= 'api'
 
 

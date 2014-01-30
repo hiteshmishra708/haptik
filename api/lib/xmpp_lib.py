@@ -9,7 +9,7 @@ import json
 import urllib2
 
 
-kXMPP_SERVER = 'zingcredits.com'
+kXMPP_SERVER = 'ec2-54-184-99-64.us-west-2.compute.amazonaws.com'
 
 def move_faqs(from_id, to_id):
     all_faqs = Faqs.objects.filter(business_id=from_id).all()
