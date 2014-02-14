@@ -2,12 +2,12 @@ var chatServerName = 'ec2-54-184-99-64.us-west-2.compute.amazonaws.com';
 
 var chatServerBind = 'http://' + chatServerName + ':5280/http-bind';
 
-var connectionUsername = '2177211755@' + chatServerName;
+var connectionUsername = 'agent@' + chatServerName;
 
 var Athena = {
 	connection: null,
 
-    activeBusinessHandle : null,
+    activeBusinessViaName : null,
     activeBusinessName: null,
     activeCollId: null,
     activeUserHandle: null,
@@ -18,16 +18,22 @@ var Athena = {
 			$('.chat-business').removeClass('selected');
 			$(this).addClass('selected');
 			var businessId = $(this).attr("id");
-			var jid = $(this).attr("handle");
-            Athena.activeBusinessHandle = jid;
+			var viaName = $(this).attr("via");
+            Athena.activeBusinessViaName = viaName;
             Athena.activeBusinessName = $(this).attr("name");
+
+            //Setting the user variables to nil
+            // because once you click on a business no user is active
+            Athena.activeCollId = null;
+            Athena.activeUserHandle = null;
+            $("#chat-area").html("");
             $.ajax({
                 type: 'GET',
                 url: '/collections_for_business/' + businessId + '/',
                 success: function(data){
                     $("#userTable tr").remove();
                     $('#userTable tbody').append(data);
-                    Athena.bindAllUsers();
+                    
                 }
             })
 		});
@@ -55,7 +61,7 @@ var Athena = {
                             Athena.activeUserHandle + 
                             "</p>");*/
                     $('#chat-area').append(data);
-                    Athena.bindChatInput();
+                    
                     $("#chat-messages").scrollTop($("#chat-messages")[0].scrollHeight);
                 }
             })
@@ -70,11 +76,12 @@ var Athena = {
                 var body = $(this).val();
                 // TODO: hard coding the user to be test. REMOVE IT
                 //var jid = Athena.activeUserHandle + '@' + chatServerName;
-                var jid = 'test@' + chatServerName;
+                var jid = Athena.activeUserHandle.toLowerCase() + '@' + chatServerName;
 
                 Athena.connection.send($msg({
                     to: jid,
-                    "type": "chat"
+                    "type": "chat",
+                    "via": Athena.activeBusinessViaName
                 }).c('body').t(body));
 
                 Athena.logMessage(body, false);
@@ -83,37 +90,78 @@ var Athena = {
                     body +
                     "</p><div class='newline'></div>"
                 );
-
                 $(this).val('');
                 $("#chat-messages").scrollTop($("#chat-messages")[0].scrollHeight);
+                var $fromUser = $("tr[handle='" + Athena.activeUserHandle.toLowerCase() +"']");
+                $fromUser.removeClass('unread');
             };
         })
     },
 
     messageReceived: function(message){
-        console.log(message);
-        var from = Strophe.getBareJidFromJid($(message).attr('from'));
-
+        var from = Strophe.getNodeFromJid($(message).attr('from'));
+        var via = $(message).attr('via');
         var body  = $(message).find('body').text();
-        Athena.logMessage(body, true);
-        $('#chat-messages').append(
-            "<p class='chat from-user'>" +
-                    body +
-            "</p><div class='newline'></div>"
-        );
+        var $fromBusiness = $("tr[via='"+via+"']");
 
-        $("#chat-messages").scrollTop($("#chat-messages")[0].scrollHeight);
-
+        // If the business is selected do user checks.
+        // else show notification and update unread
+        if ($fromBusiness.hasClass('selected')) {
+            var $fromUser = $("tr[handle='" + from +"']");
+            // if the user exists in the roster check if it is selected
+            if ($fromUser.length) {
+                // If the user is selected. Insert the row and 
+                // to the chat place and scroll to bottom.
+                if ($fromUser.hasClass('selected')) {
+                    $('#chat-messages').append(
+                            "<p class='chat from-user'>" +
+                                    body +
+                            "</p><div class='newline'></div>"
+                        );
+                    $("#chat-messages").scrollTop($("#chat-messages")[0].scrollHeight);
+                }
+                // else the user exists in the roster but is not active
+                else{
+                    //TODO: send alert and update user roster
+                    $fromUser.prependTo($fromUser.parent());
+                    $fromUser.addClass('unread');
+                    $.notify(from + " just sent a message", {globalPosition: "top center", className: "success"});
+                }
+            }
+            // Else its the firs time the user has messaged the business
+            else{
+                $.ajax({
+                    type: 'GET',
+                    data: {user_name:from, via_name:via, business_handle:connectionUsername },
+                    url: '/get_new_user_roster/',
+                    success: function(data){
+                       $.notify(from + " just sent a message", {globalPosition: "top center", className: "success"});
+                       $('#user-roster').prepend(data);
+                    },
+                    error: function(data){
+                        alert('Unable to get new user data. You will have to refresh the page');
+                    }
+                });
+            }
+        }
+        else{
+            //TODO: update business roster and update unread
+            $fromBusiness.prependTo($fromBusiness.parent());
+            $fromBusiness.addClass('unread');
+            $.notify(via + " just received a message", {globalPosition: "top center", className: "success"});
+        }
         return true;
         
 
     },
 
     logMessage: function(messageBody, fromUser){
+        var k = {body: messageBody, coll_id: Athena.activeCollId};
+        console.log(k);
         $.ajax({
-            type: 'POST',
-            data: {body: messageBody, from_user: fromUser},
-            url: '/message_send_from_business/',
+            type: 'GET',
+            data: {body: messageBody, coll_id: Athena.activeCollId},
+            url: '/message_sent_from_business/',
             success: function(data){
                 console.log('sucess');
             },
@@ -157,31 +205,28 @@ $(document).ready(function (){
 $(document).bind('connect', function(ev, data){
 	var conn = new Strophe.Connection(chatServerBind);
 
-    //conn.addHandler(Athena.messageReceived, null, "message", "chat");
-	conn.connect(connectionUsername, '1234', function(status){
+	conn.connect(connectionUsername, 'password', function(status){
 		if (status == Strophe.Status.CONNECTED) {
 			$(document).trigger('connected');
 		}
 		else if (status == Strophe.Status.DISCONNECTED) {
 			$(document).trigger('disconnected');
 		};
-        console.log(status);
-        console.log(Strophe.Status);
 	});
 	Athena.connection = conn;
 });
 
 
 $(document).bind('connected', function(){
-	//TODO: fill this part out
-    //Athena.connection.send($pres);
-
-    Athena.connection.addHandler(Athena.handle_pong, null, "iq", null, "ping1");
+    /*Athena.connection.addHandler(Athena.handle_pong, null, "iq", null, "ping1");
     var domain = Strophe.getDomainFromJid(Athena.connection.jid);
 
-    Athena.send_ping(domain);
+    Athena.send_ping(domain);*/
 	Athena.bindAllBusinesses();
+    Athena.bindAllUsers();
+    Athena.bindChatInput();
     Athena.connection.addHandler(Athena.messageReceived, null, "message");
+    Athena.connection.send($pres());
 });
 
 
