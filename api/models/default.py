@@ -1,13 +1,30 @@
 from django.db import models
 
 
+class Category(models.Model):
+    category = models.CharField(max_length=250)
+    active = models.BooleanField(default=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    modified_at = models.DateTimeField(auto_now=True)
+
+    def __unicode__(self):
+        return unicode_class(self)
+
+    def to_dict(self):
+        return convert_to_dict(self)
+
+    class Meta:
+        db_table = 'api_category'
+        app_label= 'api'
+
+
 class Business(models.Model):
     name = models.CharField(max_length=250)
     xmpp_handle = models.EmailField(max_length=250)
     image_name = models.CharField(max_length=250, null=True)
     email = models.EmailField(max_length=250, null=True)
     location = models.CharField(max_length=250) #this field dosent matter anymore, using country_code instead
-    category = models.CharField(max_length=250)
+    category = models.IntegerField(default=1)
     website = models.CharField(max_length=250, null=True)
     facebook = models.CharField(max_length=250, null=True)
     twitter = models.CharField(max_length=250, null=True)
@@ -22,6 +39,10 @@ class Business(models.Model):
     ios_recommended = models.BooleanField(default=False)
     android_recommended = models.BooleanField(default=False)
     preview_text = models.CharField(max_length=250, null=True)
+    via_name = models.CharField(max_length=250, null=True)
+    unread = models.IntegerField(default=0)
+    #category_name = models.ForeignKey(Category)
+
 
     def __unicode__(self):
         return unicode_class(self)
@@ -31,6 +52,32 @@ class Business(models.Model):
 
     class Meta:
         db_table = 'api_business'
+        app_label= 'api'
+
+
+class User2(models.Model):
+    name = models.CharField(max_length=250, null=True)
+    user_name = models.CharField(max_length=250)
+    email = models.CharField(max_length=250, null=True)
+    password = models.CharField(max_length=250, null=True)
+    login_method = models.IntegerField()
+    coll_id = models.IntegerField(null=True) #ignore field
+    from_user = models.BooleanField(default=True) #ignore field
+    unread = models.IntegerField(default=0)
+    device_token = models.CharField(max_length=250, null=True)
+    device_platform = models.IntegerField(default=0) #0 is android, 1 is iPhone
+    active = models.BooleanField(default=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    modified_at = models.DateTimeField(auto_now=True)
+
+    def __unicode__(self):
+        return unicode_class(self)
+
+    def to_dict(self):
+        return convert_to_dict(self)
+
+    class Meta:
+        db_table = 'api_user_2'
         app_label= 'api'
 
 
@@ -129,21 +176,6 @@ class Location(models.Model):
         app_label= 'api'
 
 
-class Category(models.Model):
-    category = models.CharField(max_length=250)
-    active = models.BooleanField(default=True)
-    created_at = models.DateTimeField(auto_now_add=True)
-    modified_at = models.DateTimeField(auto_now=True)
-
-    def __unicode__(self):
-        return unicode_class(self)
-
-    def to_dict(self):
-        return convert_to_dict(self)
-
-    class Meta:
-        db_table = 'api_category'
-        app_label= 'api'
 
 
 class WebsiteSignups(models.Model):
@@ -236,6 +268,7 @@ class ChatCollections(models.Model):
     # True: from user to Business
     # False: from business to user
     from_user = models.BooleanField(default=True)
+    unread = models.IntegerField(default=0)
     active = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True)
     modified_at = models.DateTimeField(auto_now=True)
@@ -252,7 +285,7 @@ class ChatCollections(models.Model):
         app_label= 'api'
 
 
-class ChatMessages(models.Model):
+class ChatMessaged(models.Model):
     coll_id = models.IntegerField()
     body = models.TextField()
     # direction: is the direction of the message
@@ -272,6 +305,88 @@ class ChatMessages(models.Model):
     class Meta:
         db_table = 'api_chatmessaged'
         app_label= 'api'
+
+
+class Agents(models.Model):
+    full_name = models.CharField(max_length=256)
+    display_name = models.CharField(max_length=256)
+    picture_url = models.CharField(max_length = 512)
+    ratings = models.IntegerField(default=5)
+    online = models.BooleanField(default=False)
+    description = models.TextField()
+    active = models.BooleanField(default=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    modified_at = models.DateTimeField(auto_now=True)
+
+    def __unicode__(self):
+        return unicode_class(self)
+
+    def to_dict(self):
+        return convert_to_dict(self)
+
+    class Meta:
+        db_table = 'api_agents'
+        app_label= 'api'
+
+
+class AgentCategory(models.Model):
+    agent_id = models.IntegerField()
+    category_id = models.IntegerField()
+    active = models.BooleanField(default=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    modified_at = models.DateTimeField(auto_now=True)
+
+    def __unicode__(self):
+        return unicode_class(self)
+
+    def to_dict(self):
+        return convert_to_dict(self)
+
+    class Meta:
+        db_table = 'api_agent_category'
+        app_label= 'api'
+
+class AgentReviews(models.Model):
+    agent_id = models.IntegerField()
+    review = models.TextField(null=True)
+    stars = models.IntegerField(default=5)
+    active = models.BooleanField(default=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    modified_at = models.DateTimeField(auto_now=True)
+
+    def __unicode__(self):
+        return unicode_class(self)
+
+    def to_dict(self):
+        return convert_to_dict(self)
+
+    class Meta:
+        db_table = 'api_agent_reviews'
+        app_label= 'api'
+
+
+class AkoshaBusiness(models.Model):
+    name = models.CharField(max_length=256)
+    url = models.CharField(max_length=512)
+    category = models.CharField(max_length=256)
+    phone = models.CharField(max_length=256, null=True)
+    email = models.CharField(max_length=256, null=True)
+    address = models.CharField(max_length=512, null=True)
+    info = models.TextField(null=True)
+    active = models.BooleanField(default=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    modified_at = models.DateTimeField(auto_now=True)
+
+    def __unicode__(self):
+        return unicode_class(self)
+
+    def to_dict(self):
+        return convert_to_dict(self)
+
+    class Meta:
+        db_table = 'api_akoshabusiness'
+        app_label= 'api'
+
 
 
 def unicode_class(obj):

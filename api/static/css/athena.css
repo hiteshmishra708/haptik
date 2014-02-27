@@ -33,6 +33,10 @@ table caption{
 	height: 40px;
 }
 
+.chat-business.unread{
+	background-color: red;
+}
+
 .chat-business.selected{
 	background-color: grey;
 }
@@ -64,9 +68,16 @@ table caption{
 	width: 80%;
 }
 
+
+
+.user-row.unread{
+	background-color: red;
+}
+
 .user-row.selected{
 	background-color: grey;
 }
+
 
 .users-name{
 	border-bottom: thin solid #ddd;

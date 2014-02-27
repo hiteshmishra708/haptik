@@ -123,29 +123,31 @@ def get_chat_history(request):
 @csrf_exempt
 def post_message(request):
     try: 
-        print 'request : ' , request
         print 'just got posted'
         to = request.POST.get('to')
         print 'TO : ', to
         body = request.POST.get('body')
         print 'BODY : ', body
         from_user = request.POST.get('from')
-        if to and not to.isdigit():
-            business = Business.objects.get(xmpp_handle = '%s@zingcredits.com' % to)
-            subject= 'Message sent to %s'  % (business.name)
+        print 'from user: ', from_user
+        subject = request.POST.get('subject')
+        print 'SUBJECT: ', subject
+
+        if to in const.BUSINESS_HANDLES:
+            subject= 'Message sent to %s'  % (to)
             message = '%s sent the following message to %s: %s           haptik.co/chat_logs/%s/%s' % (from_user, business.name, body, from_user, to)
-            send_mail(subject, message, 'swapan@haptik.co', const.kEMAILS_FOR_BUSINESS_MESG)
+            send_mail(subject, message, 'swapan@haptik.co', ['swapan@haptik.co'])
         else:
-            business = Business.objects.get(xmpp_handle = '%s@zingcredits.com' % from_user)
+            business = Business.objects.get(via_name = subject)
             print 'from : ', business
-            to_user = User.objects.filter(number=to)[0]
+            to_user = User2.objects.filter(user_name=to)[0]
             print 'FULL USER : ', to_user
             full_body = '%s: %s' % (business.name, body)
             #if the device token has a space it means
             # the user is an iphone user, if the device_token dosent have a space
             # it means they are an android user
             if to_user.device_token:
-                if ' ' in to_user.device_token.strip():
+                if to_user.device_platform == 1 and ' ' in to_user.device_token.strip():
                     send_push_notification(to_user, full_body)
                 else:
                     if to_user.device_token.strip() != 'temporaryAndroidTokenUntilSorted':
@@ -179,3 +181,15 @@ def resend_activation(request, user_id):
     return HttpResponse(True)
 
 
+def get_online_agent(request):
+    category_id = request.GET.get('category_id')
+    online_agent = None
+    if category_id:
+        agents = AgentCategory.objects.values_list('agent_id', flat=True).filter(category_id=category_id)
+        online_agents = Agents.objects.filter(id__in=agents).filter(online=1)
+        if len(online_agents) > 0:
+            online_agent = online_agents[0]
+    if not online_agent:
+        online_agent = Agents.objects.get(id=1)
+    serialize_data = serializers.serialize('json', [online_agent])
+    return HttpResponse(serialize_data, mimetype="application/json" )

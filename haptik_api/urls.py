@@ -1,5 +1,5 @@
 from django.conf.urls import patterns, include, url
-from api.resource import BusinessResource, MessageResource, CollectionResource, UserResource, FavouriteResource, FaqsResource, WebsiteSignupResource, CountriesSupportedResource
+from api.resource import BusinessResource, MessageResource, CollectionResource, UserResource, FavouriteResource, FaqsResource, WebsiteSignupResource, CountriesSupportedResource, CategoryResource, User2Resource, AgentsResource, AgentReviewResource
 from tastypie.api import Api
 from django.views.generic import TemplateView
 
@@ -12,13 +12,21 @@ v1_api.register(FavouriteResource())
 v1_api.register(FaqsResource())
 v1_api.register(WebsiteSignupResource())
 v1_api.register(CountriesSupportedResource())
+v1_api.register(CategoryResource())
+v1_api.register(User2Resource())
+v1_api.register(AgentsResource())
+v1_api.register(AgentReviewResource())
 
 from django.contrib import admin
 admin.autodiscover()
 
 urlpatterns = patterns('',
-    # Examples:
+    # WEBSITE
     url(r'^$', 'api.views.web.index', name='index'),
+    url(r'^about_us/', 'api.views.web.about_us'),
+    url(r'^list_company/', 'api.views.web.list_company'),
+    url(r'^terms/', 'api.views.web.terms'),
+    url(r'^privacy/', 'api.views.web.privacy'),
 
     # Routing urls for HAPTIK API
     url(r'^api/', include(v1_api.urls)),
@@ -47,8 +55,6 @@ urlpatterns = patterns('',
     url(r'^india/vodafone/', 'api.views.web.company_pages'),
     url(r'^india/flipkart/', 'api.views.web.company_flipkatk'),
     url(r'^india/pvr-cinemas/', 'api.views.web.company_pvr'),
-    url(r'^terms/', 'api.views.web.terms'),
-    url(r'^privacy/', 'api.views.web.privacy'),
     url(r'^why_phonenumber/', 'api.views.web.why_phone'),
     url(r'^history_businesses/', 'api.views.chat_history.get_businesses'),
     url(r'^business_user_history/(?P<business_handle>\w+)/$', 'api.views.chat_history.get_users_for_business'),
@@ -62,6 +68,16 @@ urlpatterns = patterns('',
     url(r'^ajax_send_push_to_users/', 'api.views.chat_history.ajax_send_push_to_users'),
     url(r'^ajax_reply_to_user/', 'api.views.chat_history.ajax_reply_to_user'),
     url(r'^share/', 'api.views.web.share'),
+    url(r'^get_online_agent' , 'api.views.mobile.get_online_agent'),
+
+    # ATHENA URLS
+    url(r'^athena/', 'api.views.athena.index'),
+    url(r'^collections_for_business/(?P<business_id>\d+)/$', 'api.views.athena.collection_for_business'),
+    url(r'^chats_by_collection/(?P<coll_id>\d+)/$', 'api.views.athena.chats_by_collection'),
+    url(r'^message_sent_from_business/' ,'api.views.athena.message_sent_from_business'),
+    url(r'^message_sent_from_user/' ,'api.views.athena.message_sent_from_user'),
+    url(r'^get_new_user_roster/' ,'api.views.athena.get_new_user_roster'),
+    
 
     #url(r'^robots\.txt$', TemplateView.as_view(template_name="robots.txt", content_type='text/plain')),
     #url(r'^sitemap\.xml', TemplateView.as_view(template_name="sitemap.xml", content_type='application/xml')),

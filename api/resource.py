@@ -1,5 +1,5 @@
 from tastypie.resources import ModelResource,  ALL, ALL_WITH_RELATIONS
-from api.models.default import Business, User, Favourite, Faqs, WebsiteSignups, CountriesSupported
+from api.models.default import Business, User, Favourite, Faqs, WebsiteSignups, CountriesSupported, Category, User2, Agents, AgentReviews
 from api.models.ejabber import Messages, Collections
 from api.lib.xmpp_lib import register_user, unregister_user 
 from api.lib.sms_lib import send_activation_code, send_confirmation_message_to_signup
@@ -11,19 +11,66 @@ import urllib
 from django.utils.encoding import *
 
 
+class CategoryResource(ModelResource):
+    class Meta:
+        queryset = Category.objects.all()
+        filtering = {
+            'modified_at' : ['gte' , 'lte', 'gt'],
+        }
+
 class BusinessResource(ModelResource):
+
     class Meta:
         queryset = Business.objects.filter()
         resource_name = "business"
         limit = 1000
         ordering = ['name']
         filtering = {
-            'modified_at' : ['gte' , 'lte'],
+            'modified_at' : ['gte' , 'lte', 'gt'],
             'country_code' : ALL_WITH_RELATIONS,
             'id' : ALL_WITH_RELATIONS,
             'haptik_flag' : ALL_WITH_RELATIONS,
-            'devicehelp_flag' : ALL_WITH_RELATIONS
+            'devicehelp_flag' : ALL_WITH_RELATIONS,
+            'category' : ALL_WITH_RELATIONS
         }
+
+class User2Resource(ModelResource):
+    class Meta:
+        authorization = Authorization()
+        queryset = User2.objects.filter(active=1)
+        always_return_data = True
+        resource_name = "user2"
+        filtering= { 
+            'id' : ALL
+        }
+
+    def obj_create(self, bundle, **kwargs):
+        random_number = randint(1000, 9999)
+        print'random number : ', random_number
+        try:
+            user_obj = User2.objects.filter(user_name = bundle.data['user_name']).filter(login_method = bundle.data['login_method']).all()
+            print 'user objects: ', user_obj
+            if len(user_obj)> 0:
+                # If user exists return the existing user
+                print 'foudn user'
+                bundle.obj = user_obj[len(user_obj) - 1]
+                if bundle.data.get('device_token'):
+                    setattr(bundle.obj, 'device_token', bundle.data.get('device_token'))
+                bundle.obj.save()
+                return bundle
+        except Exception, e:
+            print 'ERROR CREATING USER 2: ', e
+        # if user dosent exist or there is an error create a new one
+        print 'creating new user'
+        bundle = super(User2Resource, self).obj_create(bundle, **kwargs)
+        setattr(bundle.obj, 'password', random_number)
+        setattr(bundle.obj, 'name', urllib.unquote(bundle.obj.name))
+        bundle.obj.name = smart_text(bundle.obj.name)
+        bundle.obj.save()
+        print 'new user : ', bundle.obj
+        register_user(bundle.obj.user_name, bundle.obj.password)
+        return bundle
+
 
 
 class UserResource(ModelResource):
@@ -203,7 +250,7 @@ class FaqsResource(ModelResource):
         always_return_data = True
         filtering = {
             'active' : ALL_WITH_RELATIONS,
-            'modified_at' : ['gte' , 'lte'],
+            'modified_at' : ['gte' , 'lte', 'gt'],
             'business' : ALL_WITH_RELATIONS
         }
 
@@ -247,3 +294,23 @@ class CountriesSupportedResource(ModelResource):
 
         bundle.data['request_ip'] = bundle.request.META.get('REMOTE_ADDR')
         return bundle
+
+
+class AgentsResource(ModelResource):
+    class Meta:
+        queryset = Agents.objects.filter(active=1)
+        resource_name = 'agents'
+        authorization = Authorization()
+        filtering = {
+            'online' :ALL_WITH_RELATIONS
+        }
+
+
+class AgentReviewResource(ModelResource):
+    class Meta:
+        queryset = AgentReviews.objects.filter(active=1)
+        resource_name = 'agent_reviews'
+        authorization = Authorization()
+        filtering = {
+            'agent_id' :ALL_WITH_RELATIONS
+        }

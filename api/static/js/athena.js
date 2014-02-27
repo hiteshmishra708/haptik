@@ -82,7 +82,7 @@ var Athena = {
                     to: jid,
                     "type": "chat",
                     "via": Athena.activeBusinessViaName
-                }).c('body').t(body));
+                }).c('body').t(body).up().c('subject').t(Athena.activeBusinessViaName));
 
                 Athena.logMessage(body, false);
                 $(this).parent().find('#chat-messages').append(                
@@ -99,8 +99,11 @@ var Athena = {
     },
 
     messageReceived: function(message){
+        console.log('message from user on the next line');
+        console.log(message);
         var from = Strophe.getNodeFromJid($(message).attr('from'));
-        var via = $(message).attr('via');
+        //var via = $(message).attr('via');
+        var via = $(message).find('subject').text();
         var body  = $(message).find('body').text();
         var $fromBusiness = $("tr[via='"+via+"']");
 
@@ -128,7 +131,7 @@ var Athena = {
                     $.notify(from + " just sent a message", {globalPosition: "top center", className: "success"});
                 }
             }
-            // Else its the firs time the user has messaged the business
+            // Else its the first time the user has messaged the business
             else{
                 $.ajax({
                     type: 'GET',
@@ -151,8 +154,6 @@ var Athena = {
             $.notify(via + " just received a message", {globalPosition: "top center", className: "success"});
         }
         return true;
-        
-
     },
 
     logMessage: function(messageBody, fromUser){

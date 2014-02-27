@@ -14,7 +14,19 @@ import json
 
 
 def index(request):
-    t = loader.get_template('index.html')
+    t = loader.get_template('index1.html')
+    c = Context({})
+    response = HttpResponse(t.render(c))
+    return response
+
+def about_us(request):
+    t = loader.get_template('about-us.html')
+    c = Context({})
+    response = HttpResponse(t.render(c))
+    return response
+
+def list_company(request):
+    t = loader.get_template('list-your-company.html')
     c = Context({})
     response = HttpResponse(t.render(c))
     return response
@@ -135,17 +147,22 @@ def add_business(request, business_id=0):
             # TODO: in the future see if you can make it foreign keys
             # and it still works with the iphone API
             new_business = form.save(commit=False)
-            new_business.location = form.cleaned_data['location'].country
-            new_business.country_code = form.cleaned_data['location'].code
-            new_business.category = form.cleaned_data['category'].category
-            new_business.save()
-            xmpp_handle = new_business.xmpp_handle
-            user_name = xmpp_handle.replace('@%s' % const.kXMPP_SERVER_DOMAIN, '')
             try:
-                register_user(user_name, 'password')
-            except Exception, e:
-                print 'business handle was not created'
-                print 'user name: ',xmpp_handle 
+                new_business.location = form.cleaned_data['location'].country
+                new_business.country_code = form.cleaned_data['location'].code
+            except:
+                new_business.location = 'India'
+                new_business.country_code = 'IN'
+            new_business.category = form.cleaned_data['category']
+            new_business.xmpp_handle = const.kAGENT_XMPP_HANDLE
+            new_business.save()
+            #xmpp_handle = new_business.xmpp_handle
+            #user_name = xmpp_handle.replace('@%s' % const.kXMPP_SERVER_DOMAIN, '')
+            #try:
+            #    register_user(user_name, 'password')
+            #except Exception, e:
+            #    print 'business handle was not created'
+            #    print 'user name: ',xmpp_handle 
             return HttpResponseRedirect('/business_admin/')
     else:
         if(business_id):
@@ -153,7 +170,7 @@ def add_business(request, business_id=0):
             business_category = None
             business_location = None
             try:
-                business_category = Category.objects.get(category=business.category)
+                business_category = Category.objects.get(id=business.category)
                 business_location = CountriesSupported.objects.get(country=business.location)
 
             except:

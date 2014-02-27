@@ -4,9 +4,12 @@ import os
 SITE_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 BASE_PATH = os.path.dirname(__file__)
 
-DEBUG = False
-TASTYPIE_FULL_DEBUG = False
+DEBUG = True
+TASTYPIE_FULL_DEBUG = True
 TEMPLATE_DEBUG = DEBUG
+
+TASTYPIE_DEFAULT_FORMATS = ['json']
+
 
 ADMINS = (
     # ('Your Name', 'your_email@example.com'),
@@ -35,13 +38,13 @@ DATABASES = {
     }
 }
 
-DATABASE_ROUTERS = ['api.models.db_router.DBRouter']
+#DATABASE_ROUTERS = ['api.models.db_router.DBRouter']
 
 LOGIN_URL = '/login/'
 
 # Hosts/domain names that are valid for this site; required if DEBUG is False
 # See https://docs.djangoproject.com/en/1.5/ref/settings/#allowed-hosts
-ALLOWED_HOSTS = ['haptik.co', 'www.haptik.co']
+ALLOWED_HOSTS = ['*']
 
 # Local time zone for this installation. Choices can be found here:
 # http://en.wikipedia.org/wiki/List_of_tz_zones_by_name
@@ -111,6 +114,9 @@ TEMPLATE_LOADERS = (
 #     'django.template.loaders.eggs.Loader',
 )
 
+XS_SHARING_ALLOWED_METHODS = ['POST','GET','OPTIONS', 'PUT', 'DELETE']
+XS_SHARING_ALLOWED_ORIGINS = "*"
+
 MIDDLEWARE_CLASSES = (
     'django.middleware.common.CommonMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -118,6 +124,7 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'pipeline.middleware.MinifyHTMLMiddleware',
+    'api.middleware.crossdomainxhr.XsSharing',
     # Uncomment the next line for simple clickjacking protection:
     # 'django.middleware.clickjacking.XFrameOptionsMiddleware',
 )
@@ -150,7 +157,7 @@ INSTALLED_APPS = (
     'django.contrib.sitemaps',
     # Uncomment the next line to enable the admin:
      'django.contrib.admin',
-     'django_mobile_app_distribution',
+     #'django_mobile_app_distribution',
     # Uncomment the next line to enable admin documentation:
     # 'django.contrib.admindocs',
 )
@@ -188,7 +195,7 @@ PYAPNS_CONFIG = {
     'HOST': 'http://localhost:7077/',
     'TIMEOUT': 15,
     'INITIAL': [
-        ('Haptik', '/home/ubuntu/haptikEnterprisePush.pem', 'production'),
+        ('Haptik', '/home/ubuntu/apns-dev.pem.bkp', 'sandbox'),
         ('DeviceHelpDev', '/home/ubuntu/PushCerts/DeviceHelpDev.pem', 'sandbox'),
         ('DeviceHelpProd', '/home/ubuntu/PushCerts/DeviceHelpProd.pem', 'production'),
     ]

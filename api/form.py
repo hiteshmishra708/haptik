@@ -13,6 +13,9 @@ class CategoryModelChoice(forms.ModelChoiceField):
     def label_from_instance(self, obj):
         return obj.category
 
+    def clean(self, value):
+        print 'cleaning : ', value
+        return value
 
 class CountryCodeModelChoice(forms.ModelChoiceField):
     def label_from_instance(self, obj):
@@ -22,15 +25,17 @@ class CountryCodeModelChoice(forms.ModelChoiceField):
 
 class BusinessForm(forms.ModelForm):
 
-    category = CategoryModelChoice(queryset = Category.objects.all(), widget=forms.Select())
+    category = CategoryModelChoice(queryset = Category.objects.filter(active=1), widget=forms.Select())
     location = LocationModelChoice(queryset=CountriesSupported.objects.all(), widget=forms.Select())
     #country_code = CountryCodeModelChoice(queryset = CountriesSupported.objects.all(), widget=forms.Select())
     twitter = forms.CharField(widget = BootstrapTextInput(prepend='www.twitter.com/'))
     facebook = forms.CharField(widget = BootstrapTextInput(prepend='www.facebook.com/'))
     def __init__(self, *args, **kwargs):
         print 'IN INIT'
+        print 'args : ', args
+        print 'kwargs : ', kwargs
         super(BusinessForm, self).__init__(*args, **kwargs)
-        for key in ['email' , 'website', 'facebook', 'twitter' , 'phone_number', 'preview_text']:
+        for key in ['email' , 'website', 'facebook', 'twitter' , 'phone_number', 'preview_text', 'location']:
             self.fields[key].required = False
         
     class Meta:

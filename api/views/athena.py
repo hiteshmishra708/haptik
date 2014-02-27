@@ -1,17 +1,24 @@
 from django.template import Context, loader, RequestContext
 from django.contrib.auth import authenticate, login, logout
-from api.models.default import Business, User, ChatCollections, ChatMessages, convert_to_dict
+from api.models.default import Business, User2, ChatCollections, ChatMessaged, convert_to_dict
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render, render_to_response
+from django.views.decorators.csrf import csrf_exempt, csrf_protect
 from django.core import serializers
+from api.const import *
+from api.lib.athena import *
 import json
 
 
 def index(request):
     all_businesses = Business.objects.filter(active=1).filter(haptik_flag=1).all()
-    print 'number of businesses : ', len(all_businesses)
+    full_list = []
+    for b in all_businesses:
+        b.unread = get_unread_count_for_business(b.id)
+        full_list.append(b)
+    full_list= sorted(full_list,key= lambda k:k.unread, reverse=True)
     t = loader.get_template('athena.html')
-    c = Context({'businesses' : all_businesses})
+    c = Context({'businesses' : full_list})
     response = HttpResponse(t.render(c))
     return response
 
@@ -20,36 +27,106 @@ def collection_for_business(request, business_id):
     rows = ChatCollections.objects.filter(business_id = business_id).all()
     user_rows = []
     for r in rows:
-        a = User.objects.get(id = r.user_id)
+        a = User2.objects.get(id = r.user_id)
         a.coll_id = r.id
         a.from_user = r.from_user
+        a.unread = r.unread
         user_rows.append(a)
+    user_rows = sorted(user_rows,key= lambda k:k.unread, reverse=True)
     c = Context({'users' : user_rows})
     t = loader.get_template('athena_user_roster.html')
     response = HttpResponse(t.render(c))
     return response
 
 def chats_by_collection(request, coll_id):
-    rows = ChatMessages.objects.filter(coll_id=coll_id).all()
+    rows = ChatMessaged.objects.filter(coll_id=coll_id).all()
     c = Context({'chats' : rows})
     t = loader.get_template('athena_chats.html')
     response = HttpResponse(t.render(c))
     return response
 
 
-def message_send_from_business(request):
-    print '-' * 40
+def message_sent_from_business(request):
+    print '*'  * 40
     print request
-    body = request.POST.get('body')
-    from_user = request.POST.get('from_user')
-    if from_user == 'false':
-        from_user = False
-    else:
-        from_user = True
-    a = ChatMessages()
-    a.coll_id = 1
+    body = request.GET.get('body')
+    coll_id = request.GET.get('coll_id')
+    coll = ChatCollections.objects.get(id=coll_id)
+    coll.unread = 0
+    coll.from_user = False
+    coll.save()
+    a = ChatMessaged()
+    a.coll_id = int(coll_id)
     a.body = body
-    a.direction = from_user
+    a.direction = False
     a.save()
     return HttpResponse(True)
 
+
+def get_new_user_roster(request):
+    try:
+        user_name = request.GET.get('user_name')
+        business_via_name = request.GET.get('via_name')
+        business_xmpp_handle = request.GET.get('business_handle')
+        body = request.POST.get('body')
+        if '@' in user_name:
+            user_name = user_name.split('@')[0]
+        if '@' not in business_xmpp_handle:
+            business_xmpp_handle = '%@@%@' % (business_xmpp_handle, kXMPP_SERVER)
+        user = User2.objects.get(user_name = user_name)
+        if business_xmpp_handle == kDEFAULT_AGENT_HANDLE:
+            business = Business.objects.get(via_name = business_via_name)
+        else:
+            business = Business.objects.get(xmpp_handle = business_xmpp_handle)
+        print 'user : ', user.id
+        print 'business : ', business.id
+        coll = ChatCollections.objects.filter(business_id = business.id).filter(user_id = user.id).all()
+        coll = coll[0]
+        user.coll_id = coll.id
+        user.unread = coll.unread
+        c = Context({'users' : [user]})
+        t = loader.get_template('athena_user_roster.html')
+        response = HttpResponse(t.render(c))
+        return response
+    except Exception, e:
+        print 'unable to get new user roster: ', e
+
+
+def message_sent_from_user(request):
+    try:
+        user_id = request.GET.get('user_id')
+        business_id = request.GET.get('business_id') 
+        body = request.GET.get('body')
+        #user_name = request.GET.get('user_name')
+        #business_via_name = request.GET.get('via_name')
+        #business_xmpp_handle = request.GET.get('business_handle')
+        #body = request.POST.get('body')
+        #if '@' in user_name:
+        #    user_name = user_name.split('@')[0]
+        #if '@' not in business_xmpp_handle:
+        #    business_xmpp_handle = '%@@%@' % (business_xmpp_handle, kXMPP_SERVER)
+        #user = User2.objects.get(user_name = user_name)
+        #if business_xmpp_handle == kDEFAULT_AGENT_HANDLE:
+        #    business = Business.objects.get(via_name = business_via_name)
+        #else:
+        #    business = Business.objects.get(xmpp_handle = business_xmpp_handle)
+        coll = ChatCollections.objects.filter(business_id = business_id).filter(user_id = user_id).all()
+        if len(coll) == 0:
+            coll = ChatCollections()
+            coll.business_id = business_id
+            coll.user_id = user_id
+            coll.unread = 0
+        else:
+            coll = coll[0]
+        coll.from_user = True
+        coll.unread += 1
+        coll.save()
+        a = ChatMessaged()
+        a.coll_id = coll.id
+        a.body = body
+        a.direction = True
+        a.save()
+        resp = {'success' : True}
+        return HttpResponse(json.dumps(resp), mimetype="application/json")
+    except Exception, e:
+        print 'EXCEPTION IN LOGGIN MESSAGE FROM USER: ', e

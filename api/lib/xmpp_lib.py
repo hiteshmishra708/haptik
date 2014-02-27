@@ -141,12 +141,12 @@ def send_push_notification(user, message):
     badge = unread + 1
     sound = None
     send_push = True
-    if const.kSTARTING_FAV_WORD in message:#message.find(const.kSTARTING_FAV_WORD) == 0:
-        if not user.fav_notifications_allowed:
-            send_push = False
-    else:
-        if not user.chat_notifications_allowed:
-            send_push = False
+    #if const.kSTARTING_FAV_WORD in message:#message.find(const.kSTARTING_FAV_WORD) == 0:
+    #    if not user.fav_notifications_allowed:
+    #        send_push = False
+    #else:
+    #    if not user.chat_notifications_allowed:
+    #        send_push = False
     notification = {'aps': {'alert': message}}
     if badge is not None:
         notification['aps']['badge'] = int(badge)
@@ -156,13 +156,13 @@ def send_push_notification(user, message):
         for attempt in range(4):
             try:
                 print 'user : ', user
-                if user.device_help_user:
-                    print 'in device help push'
-                    pyapns.client.notify('DeviceHelpProd', apns_token,
-                                        notification)
-                else:
-                    pyapns.client.notify('Haptik', apns_token,
-                                        notification)
+                #if user.device_help_user:
+                #    print 'in device help push'
+                #    pyapns.client.notify('DeviceHelpProd', apns_token,
+                #                        notification)
+                #else:
+                pyapns.client.notify('Haptik', apns_token,
+                                    notification)
                 user.unread += 1
                 user.save()
                 break

@@ -1,5 +1,11 @@
 {% for user in users %}
-    <tr class='user-row' coll_id="{{ user.coll_id }}" handle="{{ user.number }}">
-        <td class='users-name'>{{ user.first_name }}</td>
+    <tr 
+    {% if user.unread > 0 %}
+        class='user-row unread' 
+    {% else %}
+        class='user-row'
+    {% endif %}
+    coll_id="{{ user.coll_id }}" handle="{{ user.user_name|lower}}">
+        <td class='users-name'>{{ user.name }}</td>
     </tr>
 {% endfor %}
