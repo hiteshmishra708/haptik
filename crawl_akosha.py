@@ -21,7 +21,7 @@ business_count = 0
 category_count = 0
 
 def get_base_business(category_url):
-    random_sleep = random.randint(40,140)
+    random_sleep = random.randint(80,240)
     print 'cateogry sleeping for : ', random_sleep
     sleep(random_sleep)
     try:
@@ -72,7 +72,7 @@ def get_base_business(category_url):
 
 
 def parse_business(businesses):
-    with open('/home/ubuntu/akosha/akosha_insurance.csv', 'a') as csvfile:
+    with open('/home/ubuntu/akosha/akosha_media.csv', 'a') as csvfile:
         writer = csv.writer(csvfile, delimiter=',', quotechar='|', quoting=csv.QUOTE_MINIMAL)
         for a in businesses:
             url = a['url']
@@ -159,7 +159,7 @@ if __name__ == "__main__":
     #business_thread = threading.Thread(target=business_worker)
     #business_thread.start()
 
-    q_category.put('/Insurance-complaint-9.html')
+    q_category.put('/Media-complaint-20.html')
 
     q_category.join()
     #q_business.join()

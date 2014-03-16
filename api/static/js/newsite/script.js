@@ -594,27 +594,16 @@ function JSONTest() {
 
 
 function Sendmail() {
-
-   
-
     if (trim(document.getElementById("txtfname").value) == "") {
-
         alert("Enter first name");
-
         document.getElementById("txtfname").focus();
-
         return false;
-
     }
 
     if (trim(document.getElementById("txtcompany").value) == "") {
-
         alert("Enter company");
-
         document.getElementById("txtcompany").focus();
-
         return false;
-
     }
 
     if (document.getElementById("standard-dropdown").value == "" || document.getElementById("standard-dropdown").value == "1") 
@@ -625,23 +614,15 @@ function Sendmail() {
     }
 
      if (trim(document.getElementById("txtpno").value) == "") {
-
         alert("Enter Phone Number");
-
         document.getElementById("txtpno").focus();
-
         return false;
-
     }
 
      if (isNaN(document.getElementById("txtpno").value)) {
-
         alert("Enter only numeric");
-
         document.getElementById("txtpno").focus();
-
         return false;
-
     }
 
     if (document.getElementById("txtpno").value.length < 10) 
@@ -655,138 +636,124 @@ function Sendmail() {
     {
         alert("Enter last name");
         document.getElementById("txtlname").focus();
-
         return false;
-
     }
 
     if (document.getElementById("txttitle").value == "") 
-
     {
-
         alert("Enter title");
-
         document.getElementById("txttitle").focus();
-
         return false;
-
     }
 
     if (document.getElementById("txtemail").value.length > 0) {
-
         if (/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(document.getElementById("txtemail").value)) {
-
-
-
         }
-
         else {
-
             alert("Invalid E-mail Address! Please re-enter.");
-
             document.getElementById("txtemail").focus();
-
             document.getElementById("txtemail").select();
-
             return false;
-
         }
-
     }
-
     else {
-
         alert("Please enter your Email ID");
         document.getElementById("txtemail").focus();
         document.getElementById("txtemail").select();
         return false;
     }
 
-
-
     if (document.getElementById("txtmsg").value == "") {
-
         alert("Enter Message");
         document.getElementById("txtmsg").focus();
         return false;
     } 
 
-            var fname = document.getElementById("txtfname").value;
+    var fname = document.getElementById("txtfname").value;
+    var lname = document.getElementById("txtlname").value;
+    var company = document.getElementById("txtcompany").value;
+    var funccontrol = document.getElementById("standard-dropdown");
+    var func = funccontrol.options[funccontrol.selectedIndex].text;          
+    var pno = document.getElementById("txtpno").value;
+    var title = document.getElementById("txttitle").value;
+    var email = document.getElementById("txtemail").value;
+    var msg = document.getElementById("txtmsg").value;
+    var oXmlHttp = zXmlHttp.createRequest();
+    var params = "r=" + Math.random() + "&fname=" + fname+  "&lname=" + lname + "&company=" + company + "&func=" + func + "&pno=" + pno + "&title=" + title + "&email=" + email + "&msg=" + msg;
 
-            var lname = document.getElementById("txtlname").value;
+    data = {
+        "fname" : fname,
+        "lname" : lname,
+        "company" : company,
+        "func" : func,
+        "pno" : pno,
+        "title" : title,
+        "email" : email,
+        "msg" : msg
+    };
+    
+    document.getElementById("intsubmit").style.display = "none";
+    document.getElementById("divloader").style.display = "block";
 
-            var company = document.getElementById("txtcompany").value;
-            var funccontrol = document.getElementById("standard-dropdown");
-            var func = funccontrol.options[funccontrol.selectedIndex].text;          
-           
-            var pno = document.getElementById("txtpno").value;
+    $.ajax({
+        url: "/company_submit/",
+        type: "GET",
+        headers: {
+            "Content-Type" : "application/json"
+        },
+        data : data,
+        dataType: "JSON",
+        success: function(response){
+            document.getElementById("intsubmit").style.display = "block";
+            document.getElementById("divloader").style.display = "none";
+            window.scroll(0,50) ;
+            godisplay();
+        },
+        error: function(response){
+            document.getElementById("intsubmit").style.display = "block";
+            document.getElementById("divloader").style.display = "none";
+            console.log(response)
+            alert('There was a problem. Please try again');
+        }
+    });
 
-            var title = document.getElementById("txttitle").value;
-
-            var email = document.getElementById("txtemail").value;
-
-            var msg = document.getElementById("txtmsg").value;
-
-
-
-            var oXmlHttp = zXmlHttp.createRequest();
-
-            var params = "r=" + Math.random() + "&fname=" + fname+  "&lname=" + lname + "&company=" + company + "&func=" + func + "&pno=" + pno + "&title=" + title + "&email=" + email + "&msg=" + msg;
-
-            // alert(params);
-
-            var url = "http://180.149.245.242/HaptikSendmail/SendUserMail.aspx";
-
-            oXmlHttp.open("POST", url, true);
-            oXmlHttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-            oXmlHttp.setRequestHeader("Content-length", params.length); 
-            oXmlHttp.setRequestHeader("Connection", "close");
-
-            oXmlHttp.onreadystatechange = function () {
-
-                if (oXmlHttp.readyState == 4) {
-
-                    //alert(oXmlHttp.responseText);
-
-                    if (oXmlHttp.responseText != "" && oXmlHttp.responseText != null) {
-
-                        var myString = oXmlHttp.responseText;
-
-                        var mySplitResult = myString.split("*");
-
-
-
-                        if (mySplitResult[0] == "1") 
-
-                        {
-
-                            godisplay();
-
-                        }
-
-                        else 
-
-                        {
-
-                            godisplay();
-
-                        }
-
-
-
-                    }
-
-                }
-
-            };
-
-            oXmlHttp.send(params);
-
-
-
-
-
-
+    // alert(params);
+//    try {
+//        var url = "http://180.149.245.242/HaptikSendmail/SendUserMail.aspx";
+//        oXmlHttp.open("POST", url, true);
+//        oXmlHttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+//        oXmlHttp.setRequestHeader("Content-length", params.length);
+//        oXmlHttp.setRequestHeader("Connection", "close");
+//        oXmlHttp.onreadystatechange = function () {
+//            if (oXmlHttp.readyState == 4) {
+//                //alert(oXmlHttp.responseText);
+//                if (oXmlHttp.responseText != "" && oXmlHttp.responseText != null) {
+//                    var myString = oXmlHttp.responseText;
+//                    var mySplitResult = myString.split("*");
+//                    if (mySplitResult[0] == "1") {
+//                        document.getElementById("intsubmit").style.display = "block";
+//                        document.getElementById("divloader").style.display = "none";
+//            window.scroll(0,50) ;
+//                        godisplay();
+//                    }
+//                    else {
+//                        document.getElementById("intsubmit").style.display = "block";
+//                        document.getElementById("divloader").style.display = "none";
+//            window.scroll(0,50) ;
+//                        godisplay();
+//                    }
+//                }
+//            }
+//        };
+//        oXmlHttp.send(params);
+//        document.getElementById("intsubmit").style.display = "none";
+//        document.getElementById("divloader").style.display = "block";
+//    }
+//    catch (ex) {
+//        document.getElementById("intsubmit").style.display = "block";
+//        document.getElementById("divloader").style.display = "none";
+//        window.scroll(0,50) ;
+//    }
 
 }
 

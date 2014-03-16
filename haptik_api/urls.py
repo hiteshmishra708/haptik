@@ -27,6 +27,7 @@ urlpatterns = patterns('',
     url(r'^list_company/', 'api.views.web.list_company'),
     url(r'^terms/', 'api.views.web.terms'),
     url(r'^privacy/', 'api.views.web.privacy'),
+    url(r'company_submit/', 'api.views.web.ajax_company_submit_form'),
 
     # Routing urls for HAPTIK API
     url(r'^api/', include(v1_api.urls)),

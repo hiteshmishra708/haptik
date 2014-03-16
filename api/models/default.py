@@ -66,6 +66,7 @@ class User2(models.Model):
     unread = models.IntegerField(default=0)
     device_token = models.CharField(max_length=250, null=True)
     device_platform = models.IntegerField(default=0) #0 is android, 1 is iPhone
+    push_notification = models.BooleanField(default=True)
     active = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True)
     modified_at = models.DateTimeField(auto_now=True)

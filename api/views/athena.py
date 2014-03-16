@@ -25,6 +25,21 @@ def index(request):
 
 def collection_for_business(request, business_id):
     rows = ChatCollections.objects.filter(business_id = business_id).all()
+    business = Business.objects.get(id=business_id)
+    print 'business : ', business
+    category_id = business.category
+    print 'category : ', category_id
+    online_agent = None
+    if category_id:
+        agents = AgentCategory.objects.values_list('agent_id', flat=True).filter(category_id=category_id)
+        online_agents = Agents.objects.filter(id__in=agents).filter(online=1)
+        if len(online_agents) > 0:
+            online_agent = online_agents[0]
+    if not online_agent:
+        online_agent = Agents.objects.get(id=1)
+    agent_name = online_agent.display_name
+    print 'agent name : ', agent_name
+
     user_rows = []
     for r in rows:
         a = User2.objects.get(id = r.user_id)
@@ -33,7 +48,7 @@ def collection_for_business(request, business_id):
         a.unread = r.unread
         user_rows.append(a)
     user_rows = sorted(user_rows,key= lambda k:k.unread, reverse=True)
-    c = Context({'users' : user_rows})
+    c = Context({'users' : user_rows, 'agent_name' : agent_name})
     t = loader.get_template('athena_user_roster.html')
     response = HttpResponse(t.render(c))
     return response

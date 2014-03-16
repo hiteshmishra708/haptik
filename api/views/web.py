@@ -10,6 +10,7 @@ from django.views.decorators.csrf import csrf_exempt, csrf_protect
 from django.contrib.auth.decorators import login_required
 from api import const
 from api.lib.beta_distrib import create_beta_distrib_url
+from django.core.mail import EmailMessage
 import json
 
 
@@ -32,6 +33,7 @@ def list_company(request):
     return response
 
 def terms(request):
+    print 'REQUEST: ', request
     t = loader.get_template('terms.html')
     c = Context({})
     response = HttpResponse(t.render(c))
@@ -92,6 +94,29 @@ def ajax_create_url(request):
     else:
         print 'NOT GET'
     return HttpResponse(False)
+
+
+def ajax_company_submit_form(request):
+    first_name = request.GET.get('fname')
+    last_name = request.GET.get('lname')
+    company = request.GET.get('company')
+    func = request.GET.get('func')
+    pno = request.GET.get('pno')
+    title = request.GET.get('title')
+    email = request.GET.get('email')
+    msg = request.GET.get('msg')
+    subject = '%s has just listed' % company
+    body = 'First name: %s \n Last Name: %s \n company: %s \n function : %s \n phone: %s \n title: %s \n email: %s \n message: %s' % (first_name, last_name, company, func, pno, title, email, msg)
+    message = EmailMessage(subject, body, 'swapan@haptik.co', ['swapan.rajdev@gmail.com'])
+    message.send()
+    
+    reply_subject = "We're excited about your interest in Haptik"
+    reply_body = 'Hi %s,\n \n Thank you for expressing your interest in partnering with Haptik. We look forward to connecting you with your customers. \n\n I will get in touch with you shortly on next steps. If you have not already, do sign up on www.haptik.co to get the app on launch day 31.3.14.\n \n Thanks, \n Aakrit Vaish \n Co-Founder & CEO \n Haptik, Inc.' % first_name
+    reply_message= EmailMessage(reply_subject, reply_body, 'aakrit@haptik.co', [email])
+    reply_message.send()
+
+    resp = {'success' : True}
+    return HttpResponse(json.dumps(resp), mimetype="application/json")
 
 
 @login_required

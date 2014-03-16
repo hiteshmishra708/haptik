@@ -55,11 +55,6 @@ var Athena = {
                 type: 'GET',
                 url: '/chats_by_collection/' + coll_id +'/',
                 success: function(data){
-                    /*$('#chat-area').append("<p>" + 
-                            Athena.activeBusinessName + 
-                            " is talking to " + 
-                            Athena.activeUserHandle + 
-                            "</p>");*/
                     $('#chat-area').append(data);
                     
                     $("#chat-messages").scrollTop($("#chat-messages")[0].scrollHeight);
@@ -74,6 +69,12 @@ var Athena = {
                 e.preventDefault();
 
                 var body = $(this).val();
+                var agent_name = $("#agent_name").text();
+                if(agent_name === ""){
+                    agent_name = 'Aakrit';
+                }
+                var subject_name = agent_name + '@' + Athena.activeBusinessViaName
+                console.log(subject_name);
                 // TODO: hard coding the user to be test. REMOVE IT
                 //var jid = Athena.activeUserHandle + '@' + chatServerName;
                 var jid = Athena.activeUserHandle.toLowerCase() + '@' + chatServerName;
@@ -81,8 +82,8 @@ var Athena = {
                 Athena.connection.send($msg({
                     to: jid,
                     "type": "chat",
-                    "via": Athena.activeBusinessViaName
-                }).c('body').t(body).up().c('subject').t(Athena.activeBusinessViaName));
+                    "via": subject_name
+                }).c('body').t(body).up().c('subject').t(subject_name));
 
                 Athena.logMessage(body, false);
                 $(this).parent().find('#chat-messages').append(                
@@ -227,7 +228,7 @@ $(document).bind('connected', function(){
     Athena.bindAllUsers();
     Athena.bindChatInput();
     Athena.connection.addHandler(Athena.messageReceived, null, "message");
-    Athena.connection.send($pres());
+    Athena.connection.send($pres({priority: 100}));
 });
 
 

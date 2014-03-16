@@ -131,12 +131,13 @@ def post_message(request):
         from_user = request.POST.get('from')
         print 'from user: ', from_user
         subject = request.POST.get('subject')
+        subject = subject.split('@')[1]
         print 'SUBJECT: ', subject
 
         if to in const.BUSINESS_HANDLES:
-            subject= 'Message sent to %s'  % (to)
+            email_subject= 'Message sent to %s'  % (to)
             message = '%s sent the following message to %s: %s           haptik.co/chat_logs/%s/%s' % (from_user, business.name, body, from_user, to)
-            send_mail(subject, message, 'swapan@haptik.co', ['swapan@haptik.co'])
+            send_mail(email_subject, message, 'swapan@haptik.co', ['swapan@haptik.co'])
         else:
             business = Business.objects.get(via_name = subject)
             print 'from : ', business
@@ -191,5 +192,13 @@ def get_online_agent(request):
             online_agent = online_agents[0]
     if not online_agent:
         online_agent = Agents.objects.get(id=1)
+    categories = AgentCategory.objects.values_list('category_id', flat=True).filter(agent_id=online_agent.id)
+    category_string = ''
+    for a in categories:
+        b = Category.objects.get(id = a)
+        category_string += b.category
+        category_string += ', '
+    category_string = category_string[:-2]
+    online_agent.description = category_string
     serialize_data = serializers.serialize('json', [online_agent])
     return HttpResponse(serialize_data, mimetype="application/json" )

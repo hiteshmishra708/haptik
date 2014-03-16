@@ -376,7 +376,15 @@ $("strong").fadeToggle(500);
                             <dd class="textarea"><textarea id="txtmsg" name="txtmsg"></textarea></dd> 
                             <dt></dt>
 
-                            <dd class="submit"><input type="image" src="/static/img/newsite/company/submit.png" onclick="Sendmail();"></dd>                           
+                             <dd class="submit">
+                                <input id="intsubmit" type="image" style="display:block;" src="/static/img/newsite/company/submit.png" onclick="Sendmail();">
+                                <div id="divloader" style="display:none;">
+                                    <img src="/static/img/newsite/ajax-loader.gif" style="padding-left: 150px;" />
+                                    <p style="color:#000;font:400 20px Open Sans;padding:0 0 8px;">
+                                            Submitting Please wait ....
+                                    </p>
+                                </div>
+                            </dd>
 
                         </dl>
                     </article>
